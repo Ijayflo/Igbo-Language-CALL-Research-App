@@ -256,7 +256,7 @@ def submit_answer(selected_tone: str) -> None:
         st.session_state.feedback = "✅ Correct!"
     else:
         st.session_state.feedback = (
-            f"❌ Incorrect. The correct tone pattern is {correct_tone}."
+            f"❌ Try again! The correct tone pattern is {correct_tone}."
         )
 
     word_id = str(challenge.get("ID", ""))
