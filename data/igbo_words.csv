@@ -1,44 +1,501 @@
-ID,IGBO_WORD,GLOSS,TONE_PATTERN,SYLLABLE_TYPE,AUDIO_FILE,IMAGE_FILE
-1,ụ́lọ̀,house,HL,2 Syl,Audio/ụ́lọ̀.wav,Image/disyllables.png
-2,àkwá,egg,LH,2 Syl,Audio/àkwá.wav,Image/disyllables.png
-3,ákwá,cry,HH,2 Syl,Audio/ákwá.wav,Image/disyllables.png
-4,ákwà,cloth,HL,2 Syl,Audio/ákwà.wav,Image/disyllables.png
-5,àkwà,bed,LL,2 Syl,Audio/àkwà.wav,Image/disyllables.png
-6,úkwú,large,HH,2 Syl,Audio/úkwú.wav,Image/disyllables.png
-7,úkwù,waist,HL,2 Syl,Audio/úkwù.wav,Image/disyllables.png
-8,òké,rat,LH,2 Syl,Audio/òké.wav,Image/disyllables.png
-9,òkè,share,LL,2 Syl,Audio/òkè.wav,Image/disyllables.png
-10,óké,male,HH,2 Syl,Audio/óké.wav,Image/disyllables.png
-11,ńnà,father,HL,2 Syl,Audio/ńnà.wav,Image/disyllables.png
-12,ńné,mother,HH,2 Syl,Audio/ńné.wav,Image/disyllables.png
-13,ńwá,child,HH,2 Syl,Audio/ńwá.wav,Image/disyllables.png
-14,áhà,name,HL,2 Syl,Audio/áhà.wav,Image/disyllables.png
-15,àkụ̀,wealth,LL,2 Syl,Audio/àkụ̀.wav,Image/disyllables.png
-16,àkpà,bag,LL,2 Syl,Audio/àkpà.wav,Image/disyllables.png
-17,áká,hand,HH,2 Syl,Audio/áká.wav,Image/disyllables.png
-18,ísí,head,HH,2 Syl,Audio/ísí.wav,Image/disyllables.png
-19,íbú,load,HH,2 Syl,Audio/íbú.wav,Image/disyllables.png
-20,ìsì,blind,LL,2 Syl,Audio/ìsì.wav,Image/disyllables.png
-21,ụ́kwụ́,leg,HH,2 Syl,Audio/ụ́kwụ́.wav,Image/disyllables.png
-22,ímí,nose,HH,2 Syl,Audio/ímí.wav,Image/disyllables.png
-23,ọ́nụ,mouth,HM,2 Syl,Audio/ọ́nụ.wav,Image/disyllables.png
-24,éze,teeth,HM,2 Syl,Audio/éze.wav,Image/disyllables.png
-25,ézè,king,HL,2 Syl,Audio/ézè.wav,Image/disyllables.png
-26,áfọ́,stomach,HH,2 Syl,Audio/áfọ́.wav,Image/disyllables.png
-27,áfọ̀,year,HL,2 Syl,Audio/áfọ̀.wav,Image/disyllables.png
-28,ányá,eye,HH,2 Syl,Audio/ányá.wav,Image/disyllables.png
-29,ńtị̀,ear,HL,2 Syl,Audio/ńtị̀.wav,Image/disyllables.png
-30,ḿbọ́,finger/toe nail,HH,2 Syl,Audio/ḿbọ́.wav,Image/disyllables.png
-31,òkwúte,stone,LHM,3 Syl,Audio/òkwúte.wav,Image/trisyllables.png
-32,ákwụ́kwọ́,book,HHH,3 Syl,Audio/ákwụ́kwọ́.wav,Image/trisyllables.png
-33,ábàlị̀,night,HLL,3 Syl,Audio/ábàlị̀.wav,Image/trisyllables.png
-34,ńkị́ta,dog,HHM,3 Syl,Audio/ńkị́ta.wav,Image/trisyllables.png
-35,ázị́zà,broom,HHL,3 Syl,Audio/ázị́zà.wav,Image/trisyllables.png
-36,ọ̀kụ́kọ̀,chicken,LHL,3 Syl,Audio/ọ̀kụ́kọ̀.wav,Image/trisyllables.png
-37,ìgòdò,key,LLL,3 Syl,Audio/ìgòdò.wav,Image/trisyllables.png
-38,ǹkàtà,basket,LLL,3 Syl,Audio/ǹkàtà.wav,Image/trisyllables.png
-39,ḿkpụ́rụ,seed,HHM,3 Syl,Audio/ḿkpụ́rụ.wav,Image/trisyllables.png
-40,jí,yam,H,1 Syl,Audio/jí.wav,Image/monosyllable.png
-41,dí,husband,H,1 Syl,Audio/dí.wav,Image/monosyllable.png
-42,gị́,you,H,1 Syl,Audio/gị́.wav,Image/monosyllable.png
-43,há,they,H,1 Syl,Audio/há.wav,Image/monosyllable.png
+﻿ID,IGBO_WORD,GLOSS,TONE_PATTERN,SYLLABLE_TYPE,AUDIO_FILE,IMAGE_FILE
+1,jí,yam,H,1 Syl,Audio/jí.wav,Image/monosyllable.png
+2,dí,husband,H,1 Syl,Audio/dí.wav,Image/monosyllable.png
+3,gị́,you,H,1 Syl,Audio/gị́.wav,Image/monosyllable.png
+4,há,they,H,1 Syl,Audio/há.wav,Image/monosyllable.png
+5,ụ́lọ̀,house,HL,2 Syl,Audio/ụ́lọ̀.wav,Image/disyllables.png
+6,àkwá,egg,LH,2 Syl,Audio/àkwá.wav,Image/disyllables.png
+7,ákwá,cry,HH,2 Syl,Audio/ákwá.wav,Image/disyllables.png
+8,ákwà,cloth,HL,2 Syl,Audio/ákwà.wav,Image/disyllables.png
+9,àkwà,bed,LL,2 Syl,Audio/àkwà.wav,Image/disyllables.png
+10,úkwú,large,HH,2 Syl,Audio/úkwú.wav,Image/disyllables.png
+11,úkwù,waist,HL,2 Syl,Audio/úkwù.wav,Image/disyllables.png
+12,òké,rat,LH,2 Syl,Audio/òké.wav,Image/disyllables.png
+13,òkè,share,LL,2 Syl,Audio/òkè.wav,Image/disyllables.png
+14,óké,male,HH,2 Syl,Audio/óké.wav,Image/disyllables.png
+15,ńnà,father,HL,2 Syl,Audio/ńnà.wav,Image/disyllables.png
+16,ńné,mother,HH,2 Syl,Audio/ńné.wav,Image/disyllables.png
+17,ńwá,child,HH,2 Syl,Audio/ńwá.wav,Image/disyllables.png
+18,áhà,name,HL,2 Syl,Audio/áhà.wav,Image/disyllables.png
+19,àkụ̀,wealth,LL,2 Syl,Audio/àkụ̀.wav,Image/disyllables.png
+20,àkpà,bag,LL,2 Syl,Audio/àkpà.wav,Image/disyllables.png
+21,áká,hand,HH,2 Syl,Audio/áká.wav,Image/disyllables.png
+22,ísí,head,HH,2 Syl,Audio/ísí.wav,Image/disyllables.png
+23,íbú,load; luggage,HH,2 Syl,Audio/íbú.wav,Image/disyllables.png
+24,ìsì,blind,LL,2 Syl,Audio/ìsì.wav,Image/disyllables.png
+25,ékwò,medulla oblangata,HL,2 Syl,Audio/ékwò.wav,Image/disyllables.png
+26,ímí,nose,HH,2 Syl,Audio/ímí.wav,Image/disyllables.png
+27,ọ́nụ,mouth,HM,2 Syl,Audio/ọ́nụ.wav,Image/disyllables.png
+28,éze,teeth,HM,2 Syl,Audio/éze.wav,Image/disyllables.png
+29,ézè,king,HL,2 Syl,Audio/ézè.wav,Image/disyllables.png
+30,áfọ́,stomach,HH,2 Syl,Audio/áfọ́.wav,Image/disyllables.png
+31,áfọ̀,year,HL,2 Syl,Audio/áfọ̀.wav,Image/disyllables.png
+32,ányá,eye,HH,2 Syl,Audio/ányá.wav,Image/disyllables.png
+33,ńtị̀,ear,HL,2 Syl,Audio/ńtị̀.wav,Image/disyllables.png
+34,ḿbọ́,finger/toe nail,HH,2 Syl,Audio/ḿbọ́.wav,Image/disyllables.png
+35,ọ́sụ̀,hiss,HL,2 Syl,Audio/ọ́sụ̀.wav,Image/disyllables.png
+36,ábọ́,market or shopping basket,HH,2 Syl,Audio/ábọ́.wav,Image/disyllables.png
+37,ǹsó,close; proximity,LH,2 Syl,Audio/ǹsó.wav,Image/disyllables.png
+38,ụ́zụ́,metalwork,HH,2 Syl,Audio/ụ́zụ́.wav,Image/disyllables.png
+39,ụ́gbọ́,vehicle,HH,2 Syl,Audio/ụ́gbọ́.wav,Image/disyllables.png
+40,ọ́là,any piece of jewelry,HL,2 Syl,Audio/ọ́là.wav,Image/disyllables.png
+41,únyì,charcoal,HL,2 Syl,Audio/únyì.wav,Image/disyllables.png
+42,ụ́kwụ́,foot; leg,HH,2 Syl,Audio/ụ́kwụ́.wav,Image/disyllables.png
+43,ọ́ṅụ̀,joy,HL,2 Syl,Audio/ọ́ṅụ̀.wav,Image/disyllables.png
+44,m̀pió,window,LH,2 Syl,Audio/m̀pió.wav,Image/disyllables.png
+45,ólú,neck,HH,2 Syl,Audio/ólú.wav,Image/disyllables.png
+46,ụ̀fụ́,pain,LH,2 Syl,Audio/ụ̀fụ́.wav,Image/disyllables.png
+47,ọ́gwụ̀,medicine,HL,2 Syl,Audio/ọ́gwụ̀.wav,Image/disyllables.png
+48,ọ̀hà,public; masses,LL,2 Syl,Audio/ọ̀hà.wav,Image/disyllables.png
+49,ùbùbé,ladder,LLH,3 Syl,Audio/ùbùbé.wav,Image/trisyllables.png
+50,ọ́nwá,moon; month,HH,2 Syl,Audio/ọ́nwá.wav,Image/disyllables.png
+51,ọ́bá,bank; store,HH,2 Syl,Audio/ọ́bá.wav,Image/disyllables.png
+52,ụ́rá,sleep,HH,2 Syl,Audio/ụ́rá.wav,Image/disyllables.png
+53,ìtè,pot,LL,2 Syl,Audio/ìtè.wav,Image/disyllables.png
+54,ọ́kụ́,fire,HH,2 Syl,Audio/ọ́kụ́.wav,Image/disyllables.png
+55,átụ́,chewing stick,HH,2 Syl,Audio/átụ́.wav,Image/disyllables.png
+56,àhụ́,body,LH,2 Syl,Audio/àhụ́.wav,Image/disyllables.png
+57,àdá,eldest daughter,LH,2 Syl,Audio/àdá.wav,Image/disyllables.png
+58,ụ́mụ̀,children ,HL,2 Syl,Audio/ụ́mụ̀.wav,Image/disyllables.png
+59,ája,"sand, soil",HM,2 Syl,Audio/ája.wav,Image/disyllables.png
+60,áwọ̀,toad,HL,2 Syl,Audio/áwọ̀.wav,Image/disyllables.png
+61,àkụ̀,finance,LL,2 Syl,Audio/àkụ̀.wav,Image/disyllables.png
+62,ùwé,dress; clothes,LH,2 Syl,Audio/ùwé.wav,Image/disyllables.png
+63,àkọ́, discernment; sense,LH,2 Syl,Audio/àkọ́.wav,Image/disyllables.png
+64,útá,arrow,HH,2 Syl,Audio/útá.wav,Image/disyllables.png
+65,ájị́,body hair (humans and animals),HH,2 Syl,Audio/ájị́.wav,Image/disyllables.png
+66,àkwụ́,bird nest,LH,2 Syl,Audio/àkwụ́.wav,Image/disyllables.png
+67,àmà,signal; notice,LL,2 Syl,Audio/àmà.wav,Image/disyllables.png
+68,ákpụ́,cassava,HH,2 Syl,Audio/ákpụ́.wav,Image/disyllables.png
+69,áṅá,cane for flogging,HH,2 Syl,Audio/áṅá.wav,Image/disyllables.png
+70,ánụ́,meat; animal,HH,2 Syl,Audio/ánụ́.wav,Image/disyllables.png
+71,ụ́zọ̀,"road, way",HL,2 Syl,Audio/ụ́zọ̀.wav,Image/disyllables.png
+72,ílú,bitterness (of taste),HH,2 Syl,Audio/ílú.wav,Image/disyllables.png
+73,ọ̀ghọ̀m,disadvantage,LL,2 Syl,Audio/ọ̀ghọ̀m.wav,Image/disyllables.png
+74,íhú,"face, front",HH,2 Syl,Audio/íhú.wav,Image/disyllables.png
+75,ụ̀zǫ́,contesting ,LH,2 Syl,Audio/ụ̀zǫ́.wav,Image/disyllables.png
+76,gbámgbám,metal sheet,HH,2 Syl,Audio/gbámgbám.wav,Image/disyllables.png
+77,íbè,mate; fellow,HL,2 Syl,Audio/íbè.wav,Image/disyllables.png
+78,ídè,flood,HL,2 Syl,Audio/ídè.wav,Image/disyllables.png
+79,ékè,creator,HL,2 Syl,Audio/ékè.wav,Image/disyllables.png
+80,ìkpó,heap,LH,2 Syl,Audio/ìkpó.wav,Image/disyllables.png
+81,ásụ́,saliva; spit,HH,2 Syl,Audio/ásụ́.wav,Image/disyllables.png
+82,íké,energy; strength,HH,2 Syl,Audio/íké.wav,Image/disyllables.png
+83,m̀gbá,wrestle; wrestling competition,LH,2 Syl,Audio/m̀gbá.wav,Image/disyllables.png
+84,ụ́kwà,breadfruit,HL,2 Syl,Audio/ụ́kwà.wav,Image/disyllables.png
+85,ìhè,light,LL,2 Syl,Audio/ìhè.wav,Image/disyllables.png
+86,ńgu,fruit picker,HM,2 Syl,Audio/ńgu.wav,Image/disyllables.png
+87,ńrí,food,HH,2 Syl,Audio/ńrí.wav,Image/disyllables.png
+88,ị̣́sám,periwinkle,HH,2 Syl,Audio/ị̣́sám.wav,Image/disyllables.png
+89,ònyé,who; person,LH,2 Syl,Audio/ònyé.wav,Image/disyllables.png
+90,ńtá,hunting,HH,2 Syl,Audio/ńtá.wav,Image/disyllables.png
+91,áfá,divination,HH,2 Syl,Audio/áfá.wav,Image/disyllables.png
+92,ńsị́,poison,HH,2 Syl,Audio/ńsị́.wav,Image/disyllables.png
+93,òghó,cotton; cotton tree,LH,2 Syl,Audio/òghó.wav,Image/disyllables.png
+94,ǹché,guarding,LH,2 Syl,Audio/ǹché.wav,Image/disyllables.png
+95,ńtụ́,ash,HH,2 Syl,Audio/ńtụ́.wav,Image/disyllables.png
+96,ágwọ́,snake,HH,2 Syl,Audio/ágwọ́.wav,Image/disyllables.png
+97,ádá,fall,HH,2 Syl,Audio/ádá.wav,Image/disyllables.png
+98,ḿma,"beauty, fine",HM,2 Syl,Audio/ḿma.wav,Image/disyllables.png
+99,ḿmà,knife,HL,2 Syl,Audio/ḿmà.wav,Image/disyllables.png
+100,ákị́,palm kernel,HH,2 Syl,Audio/ákị́.wav,Image/disyllables.png
+101,óché,chair,HH,2 Syl,Audio/óché.wav,Image/disyllables.png
+102,òtù,association,LL,2 Syl,Audio/òtù.wav,Image/disyllables.png
+103,árò,opinion; idea,HL,2 Syl,Audio/árò.wav,Image/disyllables.png
+104,ákpị̀,scorpion,HL,2 Syl,Audio/ákpị̀.wav,Image/disyllables.png
+105,àlà,land; ground; floor,LL,2 Syl,Audio/àlà.wav,Image/disyllables.png
+106,ńgwa,"equipment; gadget, ingridients",HM,2 Syl,Audio/ńgwa.wav,Image/disyllables.png
+107,ágụ,leopard; tiger,HM,2 Syl,Audio/ágụ.wav,Image/disyllables.png
+108,ágbọ́,vomit,HH,2 Syl,Audio/ágbọ́.wav,Image/disyllables.png
+109,ọ̀gbọ́,age mate ​,LH,2 Syl,Audio/ọ̀gbọ́.wav,Image/disyllables.png
+110,ákwụ́,palm fruit,HH,2 Syl,Audio/ákwụ́.wav,Image/disyllables.png
+111,ághá,war; battle,HH,2 Syl,Audio/ághá.wav,Image/disyllables.png
+112,àbọ́,forest,LH,2 Syl,Audio/àbọ́.wav,Image/disyllables.png
+113,ọ́jị̀,iroko,HL,2 Syl,Audio/ọ́jị̀.wav,Image/disyllables.png
+114,ámụ́,laughter; giggle; smile,HH,2 Syl,Audio/ámụ́.wav,Image/disyllables.png
+115,ámụ̀,penis,HL,2 Syl,Audio/ámụ̀.wav,Image/disyllables.png
+116,ńkwụ́,palm tree,HH,2 Syl,Audio/ńkwụ́.wav,Image/disyllables.png
+117,ábụ̀,hymn; song ,HL,2 Syl,Audio/ábụ̀.wav,Image/disyllables.png
+118,ábụ́,pus,HH,2 Syl,Audio/ábụ́.wav,Image/disyllables.png
+119,ámá, premises,HH,2 Syl,Audio/ámá.wav,Image/disyllables.png
+120,áhị́á,market,HH,2 Syl,Audio/áhị́á.wav,Image/disyllables.png
+121,ákpụ̀,lump,HL,2 Syl,Audio/ákpụ̀.wav,Image/disyllables.png
+122,ńjọ̀,ugly,HL,2 Syl,Audio/ńjọ̀.wav,Image/disyllables.png
+123,éfí,cow,HH,2 Syl,Audio/éfí.wav,Image/disyllables.png
+124,álọ́,umbilical chord,HH,2 Syl,Audio/álọ́.wav,Image/disyllables.png
+125,ájụ̇́,headpad,HH,2 Syl,Audio/ájụ̇́.wav,Image/disyllables.png
+126,íbó,door,HH,2 Syl,Audio/íbó.wav,Image/disyllables.png
+127,éró, mushroom,HH,2 Syl,Audio/éró.wav,Image/disyllables.png
+128,árọ́,heaviness; weight,HH,2 Syl,Audio/árọ́.wav,Image/disyllables.png
+129,ánwụ,sunlight,HM,2 Syl,Audio/ánwụ.wav,Image/disyllables.png
+130,ódò,kindness,HL,2 Syl,Audio/ódò.wav,Image/disyllables.png
+131,m̀pụ́,crime; offence,LH,2 Syl,Audio/m̀pụ́.wav,Image/disyllables.png
+132,égwù, danger; fear,HL,2 Syl,Audio/égwù.wav,Image/disyllables.png
+133,ónyénwe,lord; owner,HHM,3 Syl,Audio/ónyénwe.wav,Image/trisyllables.png
+134,échí,tomorrow,HH,2 Syl,Audio/échí.wav,Image/disyllables.png
+135,ájụ̀,dizziness,HL,2 Syl,Audio/ájụ̀.wav,Image/disyllables.png
+136,ọ́gọ̀,in-law,HL,2 Syl,Audio/ọ́gọ̀.wav,Image/disyllables.png
+137,ébé,place,HH,2 Syl,Audio/ébé.wav,Image/disyllables.png
+138,dínta,hunter,HM,2 Syl,Audio/dínta.wav,Image/disyllables.png
+139,égo,money,HM,2 Syl,Audio/égo.wav,Image/disyllables.png
+140,áṅụ,bee (insect),HM,2 Syl,Audio/áṅụ.wav,Image/disyllables.png
+141,éjù,snail,HL,2 Syl,Audio/éjù.wav,Image/disyllables.png
+142,ọ́nyá,ulcer; open sore ,HH,2 Syl,Audio/ọ́nyá.wav,Image/disyllables.png
+143,égbé,kite (bird),HH,2 Syl,Audio/égbé.wav,Image/disyllables.png
+144,óriè,second day of Igbo week,HL,2 Syl,Audio/óriè.wav,Image/disyllables.png
+145,ígwè,iron,HL,2 Syl,Audio/ígwè.wav,Image/disyllables.png
+146,íme,inside; interior,HM,2 Syl,Audio/íme.wav,Image/disyllables.png
+147,dị́bịà,native doctor,HL,2 Syl,Audio/dị́bịà.wav,Image/disyllables.png
+148,díke,warrior,HM,2 Syl,Audio/díke.wav,Image/disyllables.png
+149,íkwè,mortar,HL,2 Syl,Audio/íkwè.wav,Image/disyllables.png
+150,élé,deer,HH,2 Syl,Audio/élé.wav,Image/disyllables.png
+151,dímgba,wrestler,HM,2 Syl,Audio/dímgba.wav,Image/disyllables.png
+152,éwú,goat,HH,2 Syl,Audio/éwú.wav,Image/disyllables.png
+153,íbù,big; fat,HL,2 Syl,Audio/íbù.wav,Image/disyllables.png
+154,ígwe,sky,HM,2 Syl,Audio/ígwe.wav,Image/disyllables.png
+155,ányụ́,hammer,HH,2 Syl,Audio/ányụ́.wav,Image/disyllables.png
+156,éké,python,HH,2 Syl,Audio/éké.wav,Image/disyllables.png
+157,ézì,pig,HL,2 Syl,Audio/ézì.wav,Image/disyllables.png
+158,ífò,fable; tale,HL,2 Syl,Audio/ífò.wav,Image/disyllables.png
+159,ényì,friend,HL,2 Syl,Audio/ényì.wav,Image/disyllables.png
+160,íjè,walk,HL,2 Syl,Audio/íjè.wav,Image/disyllables.png
+161,éfè,chance,HL,2 Syl,Audio/éfè.wav,Image/disyllables.png
+162,égbè,gun,HL,2 Syl,Audio/égbè.wav,Image/disyllables.png
+163,égwú,music; song,HH,2 Syl,Audio/égwú.wav,Image/disyllables.png
+164,ékò,gizzard,HL,2 Syl,Audio/ékò.wav,Image/disyllables.png
+165,ághọ,grey (especially for hair),HM,2 Syl,Audio/ághọ.wav,Image/disyllables.png
+166,ìwú,law,LH,2 Syl,Audio/ìwú.wav,Image/disyllables.png
+167,ị̀gbà,drum,LL,2 Syl,Audio/ị̀gbà.wav,Image/disyllables.png
+168,ízù,week,HL,2 Syl,Audio/ízù.wav,Image/disyllables.png
+169,íhé,something,HH,2 Syl,Audio/íhé.wav,Image/disyllables.png
+170,íkè,bottom; buttocks,HL,2 Syl,Audio/íkè.wav,Image/disyllables.png
+171,ǹdú,leadership; guidance,LH,2 Syl,Audio/ǹdú.wav,Image/disyllables.png
+172,ádụ̀,air potato ,HL,2 Syl,Audio/ádụ̀.wav,Image/disyllables.png
+173,ílú,proverb,HH,2 Syl,Audio/ílú.wav,Image/disyllables.png
+174,ǹjèm, travel,LL,2 Syl,Audio/ǹjèm.wav,Image/disyllables.png
+175,ị́kpa, wasteland,HM,2 Syl,Audio/ị́kpa.wav,Image/disyllables.png
+176,ǹsị́,faeces; dung,LH,2 Syl,Audio/ǹsị́.wav,Image/disyllables.png
+177,òdózí,repairer,LHH,3 Syl,Audio/òdózí.wav,Image/trisyllables.png
+178,ńkwà,promise,HL,2 Syl,Audio/ńkwà.wav,Image/disyllables.png
+179,ìnyó,nonsense,LH,2 Syl,Audio/ìnyó.wav,Image/disyllables.png
+180,ḿbà,nation; continent; no,HL,2 Syl,Audio/ḿbà.wav,Image/disyllables.png
+181,édè,cocoyam,HL,2 Syl,Audio/édè.wav,Image/disyllables.png
+182,ùkwé,acapella,LH,2 Syl,Audio/ùkwé.wav,Image/disyllables.png
+183,ókwú,speech,HH,2 Syl,Audio/ókwú.wav,Image/disyllables.png
+184,ófè,excess; above limit,HL,2 Syl,Audio/ófè.wav,Image/disyllables.png
+185,ḿkpọ̀,small box; container,HL,2 Syl,Audio/ḿkpọ̀.wav,Image/disyllables.png
+186,ògbó,sponge,LH,2 Syl,Audio/ògbó.wav,Image/disyllables.png
+187,ényí,elephant,HH,2 Syl,Audio/ényí.wav,Image/disyllables.png
+188,éwí,hare,HH,2 Syl,Audio/éwí.wav,Image/disyllables.png
+189,ékú,ladle,HH,2 Syl,Audio/ékú.wav,Image/disyllables.png
+190,óghe,open; hole,HM,2 Syl,Audio/óghe.wav,Image/disyllables.png
+191,éfù,zero; nothing,HL,2 Syl,Audio/éfù.wav,Image/disyllables.png
+192,èzí,outside; compound,LH,2 Syl,Audio/èzí.wav,Image/disyllables.png
+193,ígwú,louse,HH,2 Syl,Audio/ígwú.wav,Image/disyllables.png
+194,ígù,palm frond,HL,2 Syl,Audio/ígù.wav,Image/disyllables.png
+195,èzé,sliding,LH,2 Syl,Audio/èzé.wav,Image/disyllables.png
+196,ésú,millipede ,HH,2 Syl,Audio/ésú.wav,Image/disyllables.png
+197,ígbé,crawling,HH,2 Syl,Audio/ígbé.wav,Image/disyllables.png
+198,ḿkpà,need; important,HL,2 Syl,Audio/ḿkpà.wav,Image/disyllables.png
+199,íbé,part; piece,HH,2 Syl,Audio/íbé.wav,Image/disyllables.png
+200,ḿkpú,shout; scream,HH,2 Syl,Audio/ḿkpú.wav,Image/disyllables.png
+201,ụ́nwụ́,famine; extreme scarcity of food,HH,2 Syl,Audio/ụ́nwụ́.wav,Image/disyllables.png
+202,íkpe,judgement,HM,2 Syl,Audio/íkpe.wav,Image/disyllables.png
+203,ísì,scent; smell; aroma,HL,2 Syl,Audio/ísì.wav,Image/disyllables.png
+204,ńdụ̀,life,HL,2 Syl,Audio/ńdụ̀.wav,Image/disyllables.png
+205,àzụ́,behind; back,LH,2 Syl,Audio/àzụ́.wav,Image/disyllables.png
+206,íbì,hydrocele,HL,2 Syl,Audio/íbì.wav,Image/disyllables.png
+207,ńtà,little one; younger one,HL,2 Syl,Audio/ńtà.wav,Image/disyllables.png
+208,ńra,fine,HM,2 Syl,Audio/ńra.wav,Image/disyllables.png
+209,ọ́rụ́,work; employment,HH,2 Syl,Audio/ọ́rụ́.wav,Image/disyllables.png
+210,m̀gbú,ache; pain,LH,2 Syl,Audio/m̀gbú.wav,Image/disyllables.png
+211,íwé,anger,HH,2 Syl,Audio/íwé.wav,Image/disyllables.png
+212,ǹgá,jail; prison,LH,2 Syl,Audio/ǹgá.wav,Image/disyllables.png
+213,ǹgwé,grinder,LH,2 Syl,Audio/ǹgwé.wav,Image/disyllables.png
+214,ḿba,scolding,HM,2 Syl,Audio/ḿba.wav,Image/disyllables.png
+215,ḿgbọ,bullet,HM,2 Syl,Audio/ḿgbọ.wav,Image/disyllables.png
+216,ǹjọ́,evil; sin,LH,2 Syl,Audio/ǹjọ́.wav,Image/disyllables.png
+217,ḿbè,tortoise,HL,2 Syl,Audio/ḿbè.wav,Image/disyllables.png
+218,ḿkpị̀,double; splits,HL,2 Syl,Audio/ḿkpị̀.wav,Image/disyllables.png
+219,ḿbọ̀,effort; industrious,HL,2 Syl,Audio/ḿbọ̀.wav,Image/disyllables.png
+220,ógwu,thorn,HM,2 Syl,Audio/ógwu.wav,Image/disyllables.png
+221,m̀kpí,male goat,LH,2 Syl,Audio/m̀kpí.wav,Image/disyllables.png
+222,òbí,central or most vital unit,LH,2 Syl,Audio/òbí.wav,Image/disyllables.png
+223,ùdèlè,termite,LLL,3 Syl,Audio/ùdèlè.wav,Image/trisyllables.png
+224,ógù,oath of innocence,HL,2 Syl,Audio/ógù.wav,Image/disyllables.png
+225,ùgò,eagle,LL,2 Syl,Audio/ùgò.wav,Image/disyllables.png
+226,ńsọ́,sacred; holy,HH,2 Syl,Audio/ńsọ́.wav,Image/disyllables.png
+227,nwátà,little child ,HL,2 Syl,Audio/nwátà.wav,Image/disyllables.png
+228,ǹjé,virus; germ; bacteria,LH,2 Syl,Audio/ǹjé.wav,Image/disyllables.png
+229,ǹkà, craft,LL,2 Syl,Audio/ǹkà.wav,Image/disyllables.png
+230,ọ̀kpà,cowpea,LL,2 Syl,Audio/ọ̀kpà.wav,Image/disyllables.png
+231,òwù,silence; quietude,LL,2 Syl,Audio/òwù.wav,Image/disyllables.png
+232,ńrọ́,dream,HH,2 Syl,Audio/ńrọ́.wav,Image/disyllables.png
+233,òpì,horn; flute,LL,2 Syl,Audio/òpì.wav,Image/disyllables.png
+234,ógè,time,HL,2 Syl,Audio/ógè.wav,Image/disyllables.png
+235,ọ́kọ́,rashes; itch,HH,2 Syl,Audio/ọ́kọ́.wav,Image/disyllables.png
+236,ọ̀sá,squirrel,LH,2 Syl,Audio/ọ̀sá.wav,Image/disyllables.png
+237,ụ̀dị́,type; style,LH,2 Syl,Audio/ụ̀dị́.wav,Image/disyllables.png
+238,ụ̀rá,slap,LH,2 Syl,Audio/ụ̀rá.wav,Image/disyllables.png
+239,óbì,heart; chest,HL,2 Syl,Audio/óbì.wav,Image/disyllables.png
+240,ùbú,shoulder,LH,2 Syl,Audio/ùbú.wav,Image/disyllables.png
+241,àsị́,lie,LH,2 Syl,Audio/àsị́.wav,Image/disyllables.png
+242,ókè,"boundary, border; limit",HLL,3 Syl,Audio/ókè.wav,Image/trisyllables.png
+243,ọ́dụ̀dụ̀,tail,HL,2 Syl,Audio/ọ́dụ̀dụ̀.wav,Image/disyllables.png
+244,ọ́kà,corn; maize,HL,2 Syl,Audio/ọ́kà.wav,Image/disyllables.png
+245,ósè,pepper,HL,2 Syl,Audio/ósè.wav,Image/disyllables.png
+246,író,enemy,HH,2 Syl,Audio/író.wav,Image/disyllables.png
+247,ọ́kụ̀,profession,HL,2 Syl,Audio/ọ́kụ̀.wav,Image/disyllables.png
+248,ọ́rà,stale; overnight,HL,2 Syl,Audio/ọ́rà.wav,Image/disyllables.png
+249,ọ̀jà,short wooden flute,LL,2 Syl,Audio/ọ̀jà.wav,Image/disyllables.png
+250,ụ́bọ̀,revenge,HL,2 Syl,Audio/ụ́bọ̀.wav,Image/disyllables.png
+251,ọ́nyà,snare; trap,HL,2 Syl,Audio/ọ́nyà.wav,Image/disyllables.png
+252,úbè,spear,HL,2 Syl,Audio/úbè.wav,Image/disyllables.png
+253,ǹsụ́,stammering; stuttering,LH,2 Syl,Audio/ǹsụ́.wav,Image/disyllables.png
+254,ńdị́,people,HH,2 Syl,Audio/ńdị́.wav,Image/disyllables.png
+255,úchú, focus; diligence,HH,2 Syl,Audio/úchú.wav,Image/disyllables.png
+256,òsú,outcast,LH,2 Syl,Audio/òsú.wav,Image/disyllables.png
+257,nwóke,man; boy,HM,2 Syl,Audio/nwóke.wav,Image/disyllables.png
+258,ògbò,namesake,LL,2 Syl,Audio/ògbò.wav,Image/disyllables.png
+259,ǹtú,nail (carpenter's); peg,LH,2 Syl,Audio/ǹtú.wav,Image/disyllables.png
+260,ọ́sọ́,run; race,HH,2 Syl,Audio/ọ́sọ́.wav,Image/disyllables.png
+261,ùré,decomposition; rot,LH,2 Syl,Audio/ùré.wav,Image/disyllables.png
+262,óhù,slave,HL,2 Syl,Audio/óhù.wav,Image/disyllables.png
+263,ófé,soup; sauce; stew,HH,2 Syl,Audio/ófé.wav,Image/disyllables.png
+264,ìrè,real,LL,2 Syl,Audio/ìrè.wav,Image/disyllables.png
+265,ǹchị̀,grasscutter,LL,2 Syl,Audio/ǹchị̀.wav,Image/disyllables.png
+266,ụ̀kọ́,scarcity,LH,2 Syl,Audio/ụ̀kọ́.wav,Image/disyllables.png
+267,ńchà,soap,HL,2 Syl,Audio/ńchà.wav,Image/disyllables.png
+268,ụ́dà,a bitter spice,HL,2 Syl,Audio/ụ́dà.wav,Image/disyllables.png
+269,ụ́jọ,fear,HM,2 Syl,Audio/ụ́jọ.wav,Image/disyllables.png
+270,ńne,mother,HM,2 Syl,Audio/ńne.wav,Image/disyllables.png
+271,ǹtì,cheek,LL,2 Syl,Audio/ǹtì.wav,Image/disyllables.png
+272,ùdù,clay pot,LL,2 Syl,Audio/ùdù.wav,Image/disyllables.png
+273,ọ́gụ̀,hoe,HL,2 Syl,Audio/ọ́gụ̀.wav,Image/disyllables.png
+274,ụ̀zọ́,early,LH,2 Syl,Audio/ụ̀zọ́.wav,Image/disyllables.png
+275,ǹzè,high chief,LL,2 Syl,Audio/ǹzè.wav,Image/disyllables.png
+276,ọ́chị̀,laughter,HL,2 Syl,Audio/ọ́chị̀.wav,Image/disyllables.png
+277,ụ́sụ́,bat,HH,2 Syl,Audio/ụ́sụ́.wav,Image/disyllables.png
+278,ọ́gbụ́,"rope, tether for animals",HL,2 Syl,Audio/ọ́gbụ́.wav,Image/disyllables.png
+279,údé,groan; hum; roar,HH,2 Syl,Audio/údé.wav,Image/disyllables.png
+280,ụ̀já,bark (of a dog),LH,2 Syl,Audio/ụ̀já.wav,Image/disyllables.png
+281,ńkụ́,firewood,HH,2 Syl,Audio/ńkụ́.wav,Image/disyllables.png
+282,ógo,height; level,HM,2 Syl,Audio/ógo.wav,Image/disyllables.png
+283,ọ̀kpọ́,punch; blow,LH,2 Syl,Audio/ọ̀kpọ́.wav,Image/disyllables.png
+284,ùbé,pear,LH,2 Syl,Audio/ùbé.wav,Image/disyllables.png
+285,úgwù,foreskin,HL,2 Syl,Audio/úgwù.wav,Image/disyllables.png
+286,kwùghé,open a lid or cover,LH,2 Syl,Audio/kwùghé.wav,Image/disyllables.png
+287,ùjú,fullness; plenty,LH,2 Syl,Audio/ùjú.wav,Image/disyllables.png
+288,óyi,cold,HM,2 Syl,Audio/óyi.wav,Image/disyllables.png
+289,ùgwù,respect,LL,2 Syl,Audio/ùgwù.wav,Image/disyllables.png
+290,ùdó,peace,LH,2 Syl,Audio/ùdó.wav,Image/disyllables.png
+291,ụ́tá,bow,HH,2 Syl,Audio/ụ́tá.wav,Image/disyllables.png
+292,ụ́gwọ, payment; debt,HM,2 Syl,Audio/ụ́gwọ.wav,Image/disyllables.png
+293,ụ̀bụ́,scramble,LH,2 Syl,Audio/ụ̀bụ́.wav,Image/disyllables.png
+294,ọ́dụ̀,advice,HL,2 Syl,Audio/ọ́dụ̀.wav,Image/disyllables.png
+295,ụ̀tụ́,contribution or donation,LH,2 Syl,Audio/ụ̀tụ́.wav,Image/disyllables.png
+296,úmé,breath; strength,HH,2 Syl,Audio/úmé.wav,Image/disyllables.png
+297,ọ́jị,kola nut,HM,2 Syl,Audio/ọ́jị.wav,Image/disyllables.png
+298,ọ́gụ,score (twenty),HM,2 Syl,Audio/ọ́gụ.wav,Image/disyllables.png
+299,ụ́rọ́,clay,HH,2 Syl,Audio/ụ́rọ́.wav,Image/disyllables.png
+300,ọ́kwà,announcement,HL,2 Syl,Audio/ọ́kwà.wav,Image/disyllables.png
+301,úgbo,farm; farmland,HM,2 Syl,Audio/úgbo.wav,Image/disyllables.png
+302,ọ̀tọ́,nakedness,LH,2 Syl,Audio/ọ̀tọ́.wav,Image/disyllables.png
+303,ọ́mà,embrace,HL,2 Syl,Audio/ọ́mà.wav,Image/disyllables.png
+304,ùdé,cream; lotion.,LH,2 Syl,Audio/ùdé.wav,Image/disyllables.png
+305,ọ̀kụ̀,wooden plate,LL,2 Syl,Audio/ọ̀kụ̀.wav,Image/disyllables.png
+306,óri,theft; robbery,HM,2 Syl,Audio/óri.wav,Image/disyllables.png
+307,ọ́nwụ́,death,HH,2 Syl,Audio/ọ́nwụ́.wav,Image/disyllables.png
+308,òkwúte,stone,LHM,3 Syl,Audio/òkwúte.wav,Image/trisyllables.png
+309,ákwụ́kwọ́,book,HHH,3 Syl,Audio/ákwụ́kwọ́.wav,Image/trisyllables.png
+310,ábàlị̀,night,HLL,3 Syl,Audio/ábàlị̀.wav,Image/trisyllables.png
+311,ńkị́ta,dog,HHM,3 Syl,Audio/ńkị́ta.wav,Image/trisyllables.png
+312,ázị́zà,broom,HHL,3 Syl,Audio/ázị́zà.wav,Image/trisyllables.png
+313,ọ̀kụ́kọ̀,chicken,LHL,3 Syl,Audio/ọ̀kụ́kọ̀.wav,Image/trisyllables.png
+314,ìgòdò,key,LLL,3 Syl,Audio/ìgòdò.wav,Image/trisyllables.png
+315,ǹkàtà,basket,LLL,3 Syl,Audio/ǹkàtà.wav,Image/trisyllables.png
+316,ḿkpụ́rụ,seed,HHM,3 Syl,Audio/ḿkpụ́rụ.wav,Image/trisyllables.png
+317,ńkúzí,teaching,HHH,3 Syl,Audio/ńkúzí.wav,Image/trisyllables.png
+318,ọ́kọ́chị̀,dry season,HHL,3 Syl,Audio/ọ́kọ́chị̀.wav,Image/trisyllables.png
+319,ásụ̀sụ́,language,HLH,3 Syl,Audio/ásụ̀sụ́.wav,Image/trisyllables.png
+320,àmàrà,grace,LLL,3 Syl,Audio/àmàrà.wav,Image/trisyllables.png
+321,áṅụ̀rị́,happiness,HLH,3 Syl,Audio/áṅụ̀rị́.wav,Image/trisyllables.png
+322,èbérè,mercy; sympathy,LHL,3 Syl,Audio/èbérè.wav,Image/trisyllables.png
+323,átụ́rụ,sheep; ewe,HHM,3 Syl,Audio/átụ́rụ.wav,Image/trisyllables.png
+324,ụ̀bụ́rụ̀,brain,LHL,3 Syl,Audio/ụ̀bụ́rụ̀.wav,Image/trisyllables.png
+325,ụ́dárà,African Star-apple,HHL,3 Syl,Audio/ụ́dárà.wav,Image/trisyllables.png
+326,ụ́gụ̀rụ̀,harmattan,HLL,3 Syl,Audio/ụ́gụ̀rụ̀.wav,Image/trisyllables.png
+327,ụ̀tụ́tụ̀,morning,LHL,3 Syl,Audio/ụ̀tụ́tụ̀.wav,Image/trisyllables.png
+328,ótùbò,navel,HLL,3 Syl,Audio/ótùbò.wav,Image/trisyllables.png
+329,òpúpú,sprouting,LHH,3 Syl,Audio/òpúpú.wav,Image/trisyllables.png
+330,ụ́kwárà,cough,HHL,3 Syl,Audio/ụ́kwárà.wav,Image/trisyllables.png
+331,ùdúde,spider,LHM,3 Syl,Audio/ùdúde.wav,Image/trisyllables.png
+332,ọ́gbákọ̀,gathering; council,HHL,3 Syl,Audio/ọ́gbákọ̀.wav,Image/trisyllables.png
+333,ághụ̀ghọ̀,deceit; craftiness,HLL,3 Syl,Audio/ághụ̀ghọ̀.wav,Image/trisyllables.png
+334,àgbụ̀rụ̀,race; specie,LLL,3 Syl,Audio/àgbụ̀rụ̀.wav,Image/trisyllables.png
+335,únèrè,banana ,HLL,3 Syl,Audio/únèrè.wav,Image/trisyllables.png
+336,ụ̀tábà,tobacco ,LHL,3 Syl,Audio/ụ̀tábà.wav,Image/trisyllables.png
+337,òkwùkwé,faith,LLH,3 Syl,Audio/òkwùkwé.wav,Image/trisyllables.png
+338,ńkọ́wá,definition; explanation,HHH,3 Syl,Audio/ńkọ́wá.wav,Image/trisyllables.png
+339,ágbàrà,"Spirit,deity",HLL,3 Syl,Audio/ágbàrà.wav,Image/trisyllables.png
+340,árụ́rụ́,"Ant, Insect",HHH,3 Syl,Audio/árụ́rụ́.wav,Image/trisyllables.png
+341,àjà,sacrifice,LLL,3 Syl,Audio/àjà.wav,Image/trisyllables.png
+342,àdáka,baboon,LHM,3 Syl,Audio/àdáka.wav,Image/trisyllables.png
+343,áfụ́fụ́,suffering,HHH,3 Syl,Audio/áfụ́fụ́.wav,Image/trisyllables.png
+344,ágádi,old adult,HHM,3 Syl,Audio/ágádi.wav,Image/trisyllables.png
+345,éféré, plate,HHH,3 Syl,Audio/éféré.wav,Image/trisyllables.png
+346,àghárá,chaos,LHH,3 Syl,Audio/àghárá.wav,Image/trisyllables.png
+347,àgbàtà,surrounding; nearby,LLL,3 Syl,Audio/àgbàtà.wav,Image/trisyllables.png
+348,íchéku,Black Velvet Tamarind,HHM,3 Syl,Audio/íchéku.wav,Image/trisyllables.png
+349,ápị̀tị̀,mud,HLL,3 Syl,Audio/ápị̀tị̀.wav,Image/trisyllables.png
+350,ḿbídó,beginning; start,HHH,3 Syl,Audio/ḿbídó.wav,Image/trisyllables.png
+351,èjìmá,twin,LLH,3 Syl,Audio/èjìmá.wav,Image/trisyllables.png
+352,íkwúnne,maternal home,HHM,3 Syl,Audio/íkwúnne.wav,Image/trisyllables.png
+353,ḿgbàkọ́,addition,HLH,3 Syl,Audio/ḿgbàkọ́.wav,Image/trisyllables.png
+354,ákàrà,mark; symbol; sign,HLL,3 Syl,Audio/ákàrà.wav,Image/trisyllables.png
+355,ḿgbòchí,prevention,HLH,3 Syl,Audio/ḿgbòchí.wav,Image/trisyllables.png
+356,ébùbó,allegation; accusation,HLH,3 Syl,Audio/ébùbó.wav,Image/trisyllables.png
+357,ḿkpùnyé,revelation,HLH,3 Syl,Audio/ḿkpùnyé.wav,Image/trisyllables.png
+358,ńgwóngwó,baggage,HHH,3 Syl,Audio/ńgwóngwó.wav,Image/trisyllables.png
+359,ḿgbágó,ascent,HHH,3 Syl,Audio/ḿgbágó.wav,Image/trisyllables.png
+360,ị̀chàfụ̀,head tie; scarf,LLL,3 Syl,Audio/ị̀chàfụ̀.wav,Image/trisyllables.png
+361,ókwúchí,cork; lid,HHH,3 Syl,Audio/ókwúchí.wav,Image/trisyllables.png
+362,m̀kpị́sị́,stick,LHH,3 Syl,Audio/m̀kpị́sị́.wav,Image/trisyllables.png
+363,ḿkpàgbú,punishment,HLH,3 Syl,Audio/ḿkpàgbú.wav,Image/trisyllables.png
+364,òtìtò,praise,LLL,3 Syl,Audio/òtìtò.wav,Image/trisyllables.png
+365,ákụ̣́kọ̣́,story; tale,HHH,3 Syl,Audio/ákụ̣́kọ̣́.wav,Image/trisyllables.png
+366,m̀gbàdà,antelope,LLL,3 Syl,Audio/m̀gbàdà.wav,Image/trisyllables.png
+367,àbàchà,African salad,LLL,3 Syl,Audio/àbàchà.wav,Image/trisyllables.png
+368,àbụ̀bà,fat,LLL,3 Syl,Audio/àbụ̀bà.wav,Image/trisyllables.png
+369,ọ̀chànjà,kerosene lamp,LLL,3 Syl,Audio/ọ̀chànjà.wav,Image/trisyllables.png
+370,àkàrà,beans buns,LLL,3 Syl,Audio/àkàrà.wav,Image/trisyllables.png
+371,ákpụ̣́kpọ́,skin ,HHH,3 Syl,Audio/ákpụ̣́kpọ́.wav,Image/trisyllables.png
+372,ḿbàghá,argument,HLH,3 Syl,Audio/ḿbàghá.wav,Image/trisyllables.png
+373,ágbị́sị̀,tiny black ants,HHL,3 Syl,Audio/ágbị́sị̀.wav,Image/trisyllables.png
+374,òfúfé,flight,LHH,3 Syl,Audio/òfúfé.wav,Image/trisyllables.png
+375,ḿwàchí,dominance,HLH,3 Syl,Audio/ḿwàchí.wav,Image/trisyllables.png
+376,ḿwúfè,jumping over,HHL,3 Syl,Audio/ḿwúfè.wav,Image/trisyllables.png
+377,ńrọ́gọ̀, bending,HHL,3 Syl,Audio/ńrọ́gọ̀.wav,Image/trisyllables.png
+378,ǹkàkwù,stupidity; foolishness,LLL,3 Syl,Audio/ǹkàkwù.wav,Image/trisyllables.png
+379,ògwúgwú,digging,LHH,3 Syl,Audio/ògwúgwú.wav,Image/trisyllables.png
+380,àkpị̀rị̀,tick; bug,LLL,3 Syl,Audio/àkpị̀rị̀.wav,Image/trisyllables.png
+381,ánwụ́ntà,mosquito,HHL,3 Syl,Audio/ánwụ́ntà.wav,Image/trisyllables.png
+382,ákámgba,challenge,HHM,3 Syl,Audio/ákámgba.wav,Image/trisyllables.png
+383,àkị́kà,termite,LHL,3 Syl,Audio/àkị́kà.wav,Image/trisyllables.png
+384,òhèrè,opportunity,LLL,3 Syl,Audio/òhèrè.wav,Image/trisyllables.png
+385,ńchìchá,eraser,HLH,3 Syl,Audio/ńchìchá.wav,Image/trisyllables.png
+386,ágụ̀bá,razor; blade,HLH,3 Syl,Audio/ágụ̀bá.wav,Image/trisyllables.png
+387,òfùfè,worship,LLL,3 Syl,Audio/òfùfè.wav,Image/trisyllables.png
+388,m̀bìbì,borrowing,LLL,3 Syl,Audio/m̀bìbì.wav,Image/trisyllables.png
+389,ámụ́má,prophecy,HHH,3 Syl,Audio/ámụ́má.wav,Image/trisyllables.png
+390,áṅàrà,garden egg,HLL,3 Syl,Audio/áṅàrà.wav,Image/trisyllables.png
+391,ákpàtị̀,box,HLL,3 Syl,Audio/ákpàtị̀.wav,Image/trisyllables.png
+392,àchàrà, bamboo ,LLL,3 Syl,Audio/àchàrà.wav,Image/trisyllables.png
+393,ánwụ̀rụ̀,"snuff, smoke",HLL,3 Syl,Audio/ánwụ̀rụ̀.wav,Image/trisyllables.png
+394,ótútó,boil; abscess,HHH,3 Syl,Audio/ótútó.wav,Image/trisyllables.png
+395,ákpị́rị, throat,HHM,3 Syl,Audio/ákpị́rị.wav,Image/trisyllables.png
+396,èlèlè,bean meal ,LLL,3 Syl,Audio/èlèlè.wav,Image/trisyllables.png
+397,àgbọ́ghọ̀,maiden,LHL,3 Syl,Audio/àgbọ́ghọ̀.wav,Image/trisyllables.png
+398,òbíbí,living; dwelling,LHH,3 Syl,Audio/òbíbí.wav,Image/trisyllables.png
+399,élígwe,heaven; sky,HHM,3 Syl,Audio/élígwe.wav,Image/trisyllables.png
+400,díòchì,palm wine tapper,HLL,3 Syl,Audio/díòchì.wav,Image/trisyllables.png
+401,ńkátọ̀,criticism,HHL,3 Syl,Audio/ńkátọ̀.wav,Image/trisyllables.png
+402,ányàsị̀,night,HLL,3 Syl,Audio/ányàsị̀.wav,Image/trisyllables.png
+403,ídìdè,earthworm,HLL,3 Syl,Audio/ídìdè.wav,Image/trisyllables.png
+404,érírí,string; rope; thread,HHH,3 Syl,Audio/érírí.wav,Image/trisyllables.png
+405,íkíké,authority,HHH,3 Syl,Audio/íkíké.wav,Image/trisyllables.png
+406,ọ̀zàrà,wilderness,LLL,3 Syl,Audio/ọ̀zàrà.wav,Image/trisyllables.png
+407,íkòrò,wooden gong,HLL,3 Syl,Audio/íkòrò.wav,Image/trisyllables.png
+408,ḿkpámkpá,disaster,HHH,3 Syl,Audio/ḿkpámkpá.wav,Image/trisyllables.png
+409,ọ̀gwụ́gwụ́,ending,LHH,3 Syl,Audio/ọ̀gwụ́gwụ́.wav,Image/trisyllables.png
+410,èkpéré,prayer,LHH,3 Syl,Audio/èkpéré.wav,Image/trisyllables.png
+411,èkpètè,half a dozen,LLL,3 Syl,Audio/èkpètè.wav,Image/trisyllables.png
+412,àmụ̀mà,lightening,LLL,3 Syl,Audio/àmụ̀mà.wav,Image/trisyllables.png
+413,íjiji,housefly,HMM,3 Syl,Audio/íjiji.wav,Image/trisyllables.png
+414,úbìrì,belch,HLL,3 Syl,Audio/úbìrì.wav,Image/trisyllables.png
+415,ụ́ṅàrà,movement,HLL,3 Syl,Audio/ụ́ṅàrà.wav,Image/trisyllables.png
+416,ńdándá,tiny brown ants ,HHH,3 Syl,Audio/ńdándá.wav,Image/trisyllables.png
+417,ḿgbádà,down a distance,HHL,3 Syl,Audio/ḿgbádà.wav,Image/trisyllables.png
+418,ǹgwụ́rọ,paralysis,LHM,3 Syl,Audio/ǹgwụ́rọ.wav,Image/trisyllables.png
+419,èkpèntá,leprosy,LLH,3 Syl,Audio/èkpèntá.wav,Image/trisyllables.png
+420,ìjérè,soldier ants,LHL,3 Syl,Audio/ìjérè.wav,Image/trisyllables.png
+421,ògbùgbò,intervention; separate,LLL,3 Syl,Audio/ògbùgbò.wav,Image/trisyllables.png
+422,ányánwụ̄,sun,HHM,3 Syl,Audio/ányánwụ̄.wav,Image/trisyllables.png
+423,ǹdùkú,potato,LLH,3 Syl,Audio/ǹdùkú.wav,Image/trisyllables.png
+424,ńkèwá,division; separation,HLH,3 Syl,Audio/ńkèwá.wav,Image/trisyllables.png
+425,ńjìkọ́,joining,HLH,3 Syl,Audio/ńjìkọ́.wav,Image/trisyllables.png
+426,ákpàtà,measles,HLL,3 Syl,Audio/ákpàtà.wav,Image/trisyllables.png
+427,ḿgbánwè,change,HHL,3 Syl,Audio/ḿgbánwè.wav,Image/trisyllables.png
+428,ńkọ́tọ̀,vilification,HHL,3 Syl,Audio/ńkọ́tọ̀.wav,Image/trisyllables.png
+429,ńdápụ̀,fall-off; falling off,HHL,3 Syl,Audio/ńdápụ̀.wav,Image/trisyllables.png
+430,ḿkpọ́tụ́,noise,HHH,3 Syl,Audio/ḿkpọ́tụ́.wav,Image/trisyllables.png
+431,ḿmánụ́,oil,HHH,3 Syl,Audio/ḿmánụ́.wav,Image/trisyllables.png
+432,ḿmádụ̀,human being,HHL,3 Syl,Audio/ḿmádụ̀.wav,Image/trisyllables.png
+433,ḿpémpé,piece (bit),HHH,3 Syl,Audio/ḿpémpé.wav,Image/trisyllables.png
+434,ǹkúmè,rock,LHL,3 Syl,Audio/ǹkúmè.wav,Image/trisyllables.png
+435,ńnụ̀nụ̀,bird,HLL,3 Syl,Audio/ńnụ̀nụ̀.wav,Image/trisyllables.png
+436,ǹshị́kọ,crab,LHM,3 Syl,Audio/ǹshị́kọ.wav,Image/trisyllables.png
+437,ḿgbèdè,evening,HLL,3 Syl,Audio/ḿgbèdè.wav,Image/trisyllables.png
+438,ḿbèkwú,tortoise (male),HLH,3 Syl,Audio/ḿbèkwú.wav,Image/trisyllables.png
+439,ḿmụ́ọ,spirit; soul,HHM,3 Syl,Audio/ḿmụ́ọ.wav,Image/trisyllables.png
+440,ḿmányá,wine,HHH,3 Syl,Audio/ḿmányá.wav,Image/trisyllables.png
+441,ńzùkọ́,meeting,HLH,3 Syl,Audio/ńzùkọ́.wav,Image/trisyllables.png
+442,ímụ́lọ̀,room;,HHL,3 Syl,Audio/ímụ́lọ̀.wav,Image/trisyllables.png
+443,ópóró,prawn,HHH,3 Syl,Audio/ópóró.wav,Image/trisyllables.png
+444,ḿmíri,water,HHM,3 Syl,Audio/ḿmíri.wav,Image/trisyllables.png
+445,ńkị́tị̀,silence; ignore,HHL,3 Syl,Audio/ńkị́tị̀.wav,Image/trisyllables.png
+446,ọ̀ṅụ́ṅụ́,drinking,LHH,3 Syl,Audio/ọ̀ṅụ́ṅụ́.wav,Image/trisyllables.png
+447,ńtùtù,hair,HLL,3 Syl,Audio/ńtùtù.wav,Image/trisyllables.png
+448,ńtụ́ghé, unlocking,HHH,3 Syl,Audio/ńtụ́ghé.wav,Image/trisyllables.png
+449,ìchíè,noble traditional rank ,LHL,3 Syl,Audio/ìchíè.wav,Image/trisyllables.png
+450,ụ́bọ̀chị̀,day,HLL,3 Syl,Audio/ụ́bọ̀chị̀.wav,Image/trisyllables.png
+451,íkpèrè,knee; knees,HLL,3 Syl,Audio/íkpèrè.wav,Image/trisyllables.png
+452,ńchara,rust,HMM,3 Syl,Audio/ńchara.wav,Image/trisyllables.png
+453,ńghọ́tá,understanding,HHH,3 Syl,Audio/ńghọ́tá.wav,Image/trisyllables.png
+454,ọ̀mụ̀mụ̀,fruitfulness (childbirth),LLL,3 Syl,Audio/ọ̀mụ̀mụ̀.wav,Image/trisyllables.png
+455,éjíjí,fashion (clothes),HHH,3 Syl,Audio/éjíjí.wav,Image/trisyllables.png
+456,ụ̀tàrị̀,cane; whip,LLL,3 Syl,Audio/ụ̀tàrị̀.wav,Image/trisyllables.png
+457,ị̀chàkà,a musical instrument,LLL,3 Syl,Audio/ị̀chàkà.wav,Image/trisyllables.png
+458,ǹkápị,shrew,LHM,3 Syl,Audio/ǹkápị.wav,Image/trisyllables.png
+459,ìjélè,a masquerade ,LHL,3 Syl,Audio/ìjélè.wav,Image/trisyllables.png
+460,òdìbò,servant,LLL,3 Syl,Audio/òdìbò.wav,Image/trisyllables.png
+461,óghere,opening; hole,HMM,3 Syl,Audio/óghere.wav,Image/trisyllables.png
+462,ùsòrò,pattern; process; procedure,LLL,3 Syl,Audio/ùsòrò.wav,Image/trisyllables.png
+463,ńdùrù,dove,HLL,3 Syl,Audio/ńdùrù.wav,Image/trisyllables.png
+464,ńkàtá,chat; conversation,HLH,3 Syl,Audio/ńkàtá.wav,Image/trisyllables.png
+465,ḿkpébì,conclusion; decision,HHL,3 Syl,Audio/ḿkpébì.wav,Image/trisyllables.png
+466,ǹkị́tị́,in vain,LHH,3 Syl,Audio/ǹkị́tị́.wav,Image/trisyllables.png
+467,òrírí,eating;feast,LHH,3 Syl,Audio/òrírí.wav,Image/trisyllables.png
+468,ńkwọ́chá,baldness,HHH,3 Syl,Audio/ńkwọ́chá.wav,Image/trisyllables.png
+469,m̀kpọ́rọ́,detention ,LHH,3 Syl,Audio/m̀kpọ́rọ́.wav,Image/trisyllables.png
+470,máàzị́, Mr,HLH,3 Syl,Audio/máàzị́.wav,Image/trisyllables.png
+471,ólùlù,pit; hole in the ground,HLL,3 Syl,Audio/ólùlù.wav,Image/trisyllables.png
+472,ḿméchí,closure; closing,HHH,3 Syl,Audio/ḿméchí.wav,Image/trisyllables.png
+473,m̀kpúkè,coop; chicken house,LHL,3 Syl,Audio/m̀kpúkè.wav,Image/trisyllables.png
+474,ḿmị̀mị̀,pepper fruit,HLL,3 Syl,Audio/ḿmị̀mị̀.wav,Image/trisyllables.png
+475,ḿkpárị́,insult,HHH,3 Syl,Audio/ḿkpárị́.wav,Image/trisyllables.png
+476,ókpòrò,rod; bar,HLL,3 Syl,Audio/ókpòrò.wav,Image/trisyllables.png
+477,ùgègbè,mirrow,LLL,3 Syl,Audio/ùgègbè.wav,Image/trisyllables.png
+478,ńtákwù,soliloquy,HHL,3 Syl,Audio/ńtákwù.wav,Image/trisyllables.png
+479,ọ̀bàrà,blood,LLL,3 Syl,Audio/ọ̀bàrà.wav,Image/trisyllables.png
+480,ókènyè,elder,HLL,3 Syl,Audio/ókènyè.wav,Image/trisyllables.png
+481,ógbènyè,poor person,HLL,3 Syl,Audio/ógbènyè.wav,Image/trisyllables.png
+482,táàtà,today,HLL,3 Syl,Audio/táàtà.wav,Image/trisyllables.png
+483,ḿwépụ̀,removal; subtraction,HHL,3 Syl,Audio/ḿwépụ̀.wav,Image/trisyllables.png
+484,ńgwùgwù,parcel,HLL,3 Syl,Audio/ńgwùgwù.wav,Image/trisyllables.png
+485,ụ̀fụ́fụ̀,foam; lather,HLL,3 Syl,Audio/ụ̀fụ́fụ̀.wav,Image/trisyllables.png
+486,úghére,yawn,HHM,3 Syl,Audio/úghére.wav,Image/trisyllables.png
+487,ńsògbú,trouble; disturbance,HLH,3 Syl,Audio/ńsògbú.wav,Image/trisyllables.png
+488,òkpúrù,under,LHL,3 Syl,Audio/òkpúrù.wav,Image/trisyllables.png
+489,ọ́kpụ́kpụ́,bone,HHH,3 Syl,Audio/ọ́kpụ́kpụ́.wav,Image/trisyllables.png
+490,ònyìnyé,gift; present,LLH,3 Syl,Audio/ònyìnyé.wav,Image/trisyllables.png
+491,ònúgbù,bitter leaf ,LHL,3 Syl,Audio/ònúgbù.wav,Image/trisyllables.png
+492,òròmá,orange (fruit),LLH,3 Syl,Audio/òròmá.wav,Image/trisyllables.png
+493,ọ̀gbọ̀nọ̀,seed of wild mango ,LLL,3 Syl,Audio/ọ̀gbọ̀nọ̀.wav,Image/trisyllables.png
+494,úgíri,wild mango fruit ,HHM,3 Syl,Audio/úgíri.wav,Image/trisyllables.png
+495,ọ̀pụ̀pụ̀,exit,LLL,3 Syl,Audio/ọ̀pụ̀pụ̀.wav,Image/trisyllables.png
+496,ọ̀kàrà,half,LLL,3 Syl,Audio/ọ̀kàrà.wav,Image/trisyllables.png
+497,ọ̀mụ̀mụ́,learning,LLH,3 Syl,Audio/ọ̀mụ̀mụ́.wav,Image/trisyllables.png
+498,ákwárà,vein; root,HHL,3 Syl,Audio/ákwárà.wav,Image/trisyllables.png
+499,ḿmégbú,oppression,HHH,3 Syl,Audio/ḿmégbú.wav,Image/trisyllables.png
+500,ńdọ́ká,tearing,HHH,3 Syl,Audio/ńdọ́ká.wav,Image/trisyllables.png
