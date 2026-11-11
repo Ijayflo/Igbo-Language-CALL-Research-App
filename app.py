@@ -42,7 +42,7 @@ TONE_IMAGES = {
     tone: TONE_IMAGE_DIR / f"{tone}.png"
     for tone in [
         "H", "L", "HL", "HM", "LH", "HH", "LL", "HLH", "LLL",
-        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM",
+        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM", "HMM"
     ]
 }
 
