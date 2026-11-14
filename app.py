@@ -118,6 +118,7 @@ SESSION_DEFAULTS: dict[str, Any] = {
     "feedback": "",
     "used_word_ids": [],
     "assessment_queue": [],
+    "post_test_review": [],
     "question_started_at": None,
     "round_number": 1,
 }
@@ -296,6 +297,16 @@ def submit_answer(selected_tone: str) -> None:
             f"❌ Try again! The correct tone pattern is {correct_tone}."
         )
 
+    if st.session_state.test_type == "Post-test":
+        st.session_state.post_test_review.append({
+            "Question": question_number,
+            "Word": challenge.get("IGBO_WORD", ""),
+            "Meaning": challenge.get("GLOSS", ""),
+            "Your answer": selected_tone,
+            "Correct tone": correct_tone,
+            "Result": "Correct" if is_correct else "Incorrect",
+        })
+
     word_id = str(challenge.get("ID", ""))
     if word_id and word_id not in st.session_state.used_word_ids:
         st.session_state.used_word_ids.append(word_id)
@@ -325,6 +336,7 @@ def reset_round() -> None:
     st.session_state.feedback = ""
     st.session_state.used_word_ids = []
     st.session_state.assessment_queue = []
+    st.session_state.post_test_review = []
     st.session_state.question_started_at = None
     st.session_state.round_number += 1
     st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
@@ -370,9 +382,10 @@ with st.sidebar:
 
     st.subheader("Progress")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Score", "—" if is_assessment() else st.session_state.score)
+    show_score = not is_assessment() or (st.session_state.test_type == "Post-test" and st.session_state.attempts >= max_questions())
+    col1.metric("Score", st.session_state.score if show_score else "—")
     col2.metric("Attempts", st.session_state.attempts)
-    col3.metric("Accuracy", "—" if is_assessment() else f"{calculate_accuracy():.0f}%")
+    col3.metric("Accuracy", f"{calculate_accuracy():.0f}%" if show_score else "—")
 
     if st.session_state.feedback:
         st.subheader("")
@@ -401,12 +414,15 @@ if st.session_state.attempts >= max_questions():
     if st.session_state.test_type == "Pre-test":
         st.success("### Pre-test Complete!\nGreat job! You completed all 15 questions.")
     elif st.session_state.test_type == "Post-test":
-        st.success(
-            f"### Post-test Complete!\n"
-            f"Great job! You completed your Igbo tone challenge!  \n"
-            f"**Score:** {st.session_state.score}/{max_questions()}  \n"
-            f"**Accuracy:** {calculate_accuracy():.1f}%"
-        )
+        st.success("### Post-test Complete!\nGreat job! You completed your Igbo tone challenge!")
+        c1, c2 = st.columns(2)
+        c1.metric("Final Score", f"{st.session_state.score}/{max_questions()}")
+        c2.metric("Final Accuracy", f"{calculate_accuracy():.1f}%")
+        with st.expander("Review your answers", expanded=True):
+            if st.session_state.post_test_review:
+                st.dataframe(pd.DataFrame(st.session_state.post_test_review), hide_index=True, use_container_width=True)
+            else:
+                st.info("No answer review is available for this round. Start a new round to collect review details.")
     else:
         st.success(
             f"### Round Complete!\n"
