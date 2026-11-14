@@ -42,7 +42,7 @@ TONE_IMAGES = {
     tone: TONE_IMAGE_DIR / f"{tone}.png"
     for tone in [
         "H", "L", "HL", "HM", "LH", "HH", "LL", "HLH", "LLL",
-        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM", "HMM"
+        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM",
     ]
 }
 
@@ -256,7 +256,7 @@ def submit_answer(selected_tone: str) -> None:
         st.session_state.feedback = "✅ Correct!"
     else:
         st.session_state.feedback = (
-            f"❌ Try again! The correct tone pattern is {correct_tone}."
+            f"❌ Incorrect. The correct tone pattern is {correct_tone}."
         )
 
     word_id = str(challenge.get("ID", ""))
