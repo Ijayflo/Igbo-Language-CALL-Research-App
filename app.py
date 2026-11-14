@@ -224,36 +224,68 @@ def create_challenge() -> None:
     st.session_state.question_started_at = time.perf_counter()
 
 
-def redcap_call(**payload):
-    response = requests.post(
-        st.secrets["REDCAP_API_URL"],
-        data={"token": st.secrets["REDCAP_API_TOKEN"], "format": "json", "returnFormat": "json", **payload},
-        timeout=(5, 20),
-    )
-    response.raise_for_status()
-    result = response.json()
-    if isinstance(result, dict) and "error" in result:
-        raise ValueError("REDCap rejected the request")
+class RedcapDiagnosticError(Exception):
+    pass
+
+
+def redcap_call(stage, **payload):
+    try:
+        url = st.secrets["REDCAP_API_URL"]
+        token = st.secrets["REDCAP_API_TOKEN"]
+    except Exception:
+        raise RedcapDiagnosticError(f"{stage}: missing or unreadable Streamlit Secrets.") from None
+    try:
+        response = requests.post(
+            url, data={"token": token, "format": "json", "returnFormat": "json", **payload},
+            timeout=(5, 20), allow_redirects=False,
+        )
+    except requests.RequestException as exc:
+        raise RedcapDiagnosticError(f"{stage}: network error ({type(exc).__name__}).") from None
+    # Never display raw server text, credentials, URLs or response records.
+    try:
+        result = response.json()
+    except ValueError:
+        result = None
+    error = result.get("error") if isinstance(result, dict) else None
+    if not response.ok or error is not None or 300 <= response.status_code < 400:
+        message = str(error or "").lower()
+        hints = []
+        for terms, hint in [
+            (("token", "authentication"), "Token/authentication issue"),
+            (("permission", "privilege", "rights", "authorized"), "Permission issue"),
+            (("repeat", "instance"), "Repeating instrument/instance issue"),
+            (("event", "longitudinal"), "Event configuration issue"),
+            (("record", "record_id"), "Record-related issue"),
+            (("validation", "invalid", "field"), "Field or value validation issue"),
+        ]:
+            if any(term in message for term in terms):
+                hints.append(hint)
+        if 300 <= response.status_code < 400:
+            hints.append("Unexpected redirect; verify API endpoint")
+        detail = "; ".join(hints) or "No recognized error category"
+        raise RedcapDiagnosticError(f"{stage}: HTTP {response.status_code}; {detail}.")
+    if result is None:
+        raise RedcapDiagnosticError(f"{stage}: HTTP {response.status_code}; response was not valid JSON.")
     return result
 
 
 def write_result(record):
     # Reconcile a retry before allocating a new repeating instance.
-    existing = redcap_call(content="record", type="flat", **{
+    existing = redcap_call("Export existing responses", content="record", type="flat", **{
         "records[0]": record["record_id"], "fields[0]": "record_id",
         "fields[1]": "response_id",
     })
     if not isinstance(existing, list):
-        raise ValueError("Unexpected export response")
+        raise RedcapDiagnosticError("Export: unexpected JSON structure; expected a list.")
     instances = [r for r in existing if r.get("redcap_repeat_instrument") == "igbo_tone_response"]
     if any(r.get("response_id") == record["response_id"] for r in instances):
         return
     # Use REDCap's automatic instance allocation (requires supported server version).
     payload = dict(record, redcap_repeat_instrument="igbo_tone_response", redcap_repeat_instance="new")
-    result = redcap_call(content="record", type="flat", overwriteBehavior="normal",
+    result = redcap_call("Import new response", content="record", type="flat", overwriteBehavior="normal",
                          data=json.dumps([payload], ensure_ascii=False), returnContent="count")
     if not isinstance(result, dict) or int(result.get("count", 0)) != 1:
-        raise ValueError("Import not confirmed")
+        raise RedcapDiagnosticError("Import: server response did not confirm exactly one record.")
 
 
 def submit_answer(selected_tone: str) -> None:
@@ -296,8 +328,11 @@ def submit_answer(selected_tone: str) -> None:
     record = st.session_state.pending_response
     try:
         write_result(record)
-    except Exception:
+    except Exception as exc:
+        detail = str(exc) if isinstance(exc, RedcapDiagnosticError) else f"Unexpected application error ({type(exc).__name__})."
         st.session_state.save_error = "Answer could not be confirmed in REDCap. Retry saving; do not close or refresh this page."
+        if str(record["record_id"]).startswith("TEST"):
+            st.session_state.save_error += "\n\nDiagnostic: " + detail
         return
     selected_tone = record["selected_tone"]
     is_correct = bool(record["is_correct"])
