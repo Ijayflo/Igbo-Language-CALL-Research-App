@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-import csv
+import json
+import uuid
+from zoneinfo import ZoneInfo
+import requests
 import random
 import time
 from datetime import datetime
@@ -28,7 +31,6 @@ st.markdown(
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_FILE = BASE_DIR / "data" / "igbo_words.csv"
-RESULTS_FILE = BASE_DIR / "results.csv"
 TONE_IMAGE_DIR = BASE_DIR / "tone_images"
 PRACTICE_QUESTIONS = 10
 ASSESSMENT_DISTRIBUTION = {"1 Syl": 3, "2 Syl": 6, "3 Syl": 6}
@@ -106,6 +108,9 @@ except (FileNotFoundError, ValueError, pd.errors.ParserError) as exc:
 
 SESSION_DEFAULTS: dict[str, Any] = {
     "participant_id": "",
+    "session_id": "",
+    "pending_response": None,
+    "save_error": "",
     "test_type": "Practice",
     "selected_level": "1 Syl",
     "active_level": "1 Syl",
@@ -219,51 +224,36 @@ def create_challenge() -> None:
     st.session_state.question_started_at = time.perf_counter()
 
 
-def write_result(
-    *,
-    challenge: dict[str, Any],
-    selected_tone: str,
-    correct_tone: str,
-    is_correct: bool,
-    response_time_seconds: float,
-    question_number: int,
-) -> None:
-    file_exists = RESULTS_FILE.exists()
+def redcap_call(**payload):
+    response = requests.post(
+        st.secrets["REDCAP_API_URL"],
+        data={"token": st.secrets["REDCAP_API_TOKEN"], "format": "json", "returnFormat": "json", **payload},
+        timeout=(5, 20),
+    )
+    response.raise_for_status()
+    result = response.json()
+    if isinstance(result, dict) and "error" in result:
+        raise ValueError("REDCap rejected the request")
+    return result
 
-    headers = [
-        "Timestamp", "Participant_ID", "Test_Type", "Round_Number",
-        "Question_Number", "Practice_Level", "Word_ID", "Igbo_Word",
-        "Gloss", "Correct_Tone", "Selected_Tone", "Correct",
-        "Response_Time_Seconds",
-    ]
 
-    row = [
-        datetime.now().isoformat(timespec="seconds"),
-        st.session_state.participant_id.strip(),
-        st.session_state.test_type,
-        st.session_state.round_number,
-        question_number,
-        str(challenge.get("SYLLABLE_TYPE", "")),
-        challenge.get("ID", ""),
-        challenge.get("IGBO_WORD", ""),
-        str(challenge.get("GLOSS", "")).strip(),
-        correct_tone,
-        selected_tone,
-        is_correct,
-        f"{response_time_seconds:.3f}",
-    ]
-
-    try:
-        with RESULTS_FILE.open("a", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            if not file_exists:
-                writer.writerow(headers)
-            writer.writerow(row)
-    except PermissionError:
-        st.session_state.feedback = (
-            "⚠️ Your answer was processed, but results.csv could not be updated. "
-            "Close it in Excel and continue."
-        )
+def write_result(record):
+    # Reconcile a retry before allocating a new repeating instance.
+    existing = redcap_call(content="record", type="flat", **{
+        "records[0]": record["record_id"], "fields[0]": "record_id",
+        "fields[1]": "response_id",
+    })
+    if not isinstance(existing, list):
+        raise ValueError("Unexpected export response")
+    instances = [r for r in existing if r.get("redcap_repeat_instrument") == "igbo_tone_response"]
+    if any(r.get("response_id") == record["response_id"] for r in instances):
+        return
+    # Use REDCap's automatic instance allocation (requires supported server version).
+    payload = dict(record, redcap_repeat_instrument="igbo_tone_response", redcap_repeat_instance="new")
+    result = redcap_call(content="record", type="flat", overwriteBehavior="normal",
+                         data=json.dumps([payload], ensure_ascii=False), returnContent="count")
+    if not isinstance(result, dict) or int(result.get("count", 0)) != 1:
+        raise ValueError("Import not confirmed")
 
 
 def submit_answer(selected_tone: str) -> None:
@@ -280,6 +270,39 @@ def submit_answer(selected_tone: str) -> None:
         else 0.0
     )
     is_correct = selected_tone == correct_tone
+
+    if st.session_state.pending_response is None:
+        if not st.session_state.session_id:
+            st.session_state.session_id = uuid.uuid4().hex
+        syllable = str(challenge["SYLLABLE_TYPE"]).strip()
+        st.session_state.pending_response = {
+            "record_id": st.session_state.participant_id.strip(),
+            "session_type": {"Pre-test": 1, "Practice": 2, "Post-test": 3}[st.session_state.test_type],
+            "round_number": st.session_state.round_number,
+            "question_number": question_number,
+            "word_id": str(challenge["ID"]),
+            "igbo_word": str(challenge["IGBO_WORD"]),
+            "gloss": str(challenge.get("GLOSS", "")),
+            "correct_tone": correct_tone,
+            "selected_tone": selected_tone,
+            "is_correct": int(is_correct),
+            "response_time": f"{response_time:.3f}",
+            "response_timestamp": datetime.now(ZoneInfo("America/Regina")).strftime("%Y-%m-%d %H:%M:%S"),
+            "practice_level": "Mixed" if is_assessment() else st.session_state.active_level,
+            "syllable_type": {"1 Syl": 1, "2 Syl": 2, "3 Syl": 3}[syllable],
+            "session_id": st.session_state.session_id,
+            "response_id": uuid.uuid4().hex,
+        }
+    record = st.session_state.pending_response
+    try:
+        write_result(record)
+    except Exception:
+        st.session_state.save_error = "Answer could not be confirmed in REDCap. Retry saving; do not close or refresh this page."
+        return
+    selected_tone = record["selected_tone"]
+    is_correct = bool(record["is_correct"])
+    st.session_state.pending_response = None
+    st.session_state.save_error = ""
 
     st.session_state.selected_tone = selected_tone
     st.session_state.answered = True
@@ -311,14 +334,6 @@ def submit_answer(selected_tone: str) -> None:
     if word_id and word_id not in st.session_state.used_word_ids:
         st.session_state.used_word_ids.append(word_id)
 
-    write_result(
-        challenge=challenge,
-        selected_tone=selected_tone,
-        correct_tone=correct_tone,
-        is_correct=is_correct,
-        response_time_seconds=response_time,
-        question_number=question_number,
-    )
 
 
 def start_next_challenge() -> None:
@@ -327,6 +342,7 @@ def start_next_challenge() -> None:
 
 
 def reset_round() -> None:
+    st.session_state.session_id = uuid.uuid4().hex
     st.session_state.score = 0
     st.session_state.attempts = 0
     st.session_state.challenge = None
@@ -358,6 +374,8 @@ with st.sidebar:
         "Participant ID",
         key="participant_id",
         placeholder="Enter participant code",
+        disabled=st.session_state.pending_response is not None,
+        on_change=reset_round,
     )
 
     st.selectbox(
@@ -365,6 +383,7 @@ with st.sidebar:
         options=["Practice", "Pre-test", "Post-test"],
         key="test_type",
         on_change=handle_session_change,
+        disabled=st.session_state.pending_response is not None,
     )
 
     if is_assessment():
@@ -378,6 +397,7 @@ with st.sidebar:
             horizontal=True,
             key="selected_level",
             on_change=handle_level_change,
+            disabled=st.session_state.pending_response is not None,
         )
 
     st.subheader("Progress")
@@ -408,6 +428,11 @@ if not st.session_state.participant_id.strip():
 if st.session_state.challenge is None and st.session_state.attempts < max_questions():
     st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
     create_challenge()
+
+if st.session_state.pending_response is not None:
+    st.error(st.session_state.save_error)
+    st.button("Retry saving answer", on_click=submit_answer, args=(st.session_state.pending_response["selected_tone"],))
+    st.stop()
 
 if st.session_state.attempts >= max_questions():
     st.balloons()
