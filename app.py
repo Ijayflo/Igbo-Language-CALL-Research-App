@@ -356,7 +356,7 @@ with st.sidebar:
     )
 
     if is_assessment():
-        st.caption("")
+        st.caption("Level Mode: Mixed (automatic) · 15 questions")
     else:
         if "selected_level" not in st.session_state:
             st.session_state.selected_level = "1 Syl"
@@ -397,10 +397,17 @@ if st.session_state.challenge is None and st.session_state.attempts < max_questi
     create_challenge()
 
 if st.session_state.attempts >= max_questions():
-    if is_assessment():
-        st.success("### Assessment Complete!\nAll 15 answers have been recorded.")
+    st.balloons()
+    if st.session_state.test_type == "Pre-test":
+        st.success("### Pre-test Complete!\nGreat job! You completed all 15 questions.")
+    elif st.session_state.test_type == "Post-test":
+        st.success(
+            f"### Post-test Complete!\n"
+            f"Great job! You completed your Igbo tone challenge!  \n"
+            f"**Score:** {st.session_state.score}/{max_questions()}  \n"
+            f"**Accuracy:** {calculate_accuracy():.1f}%"
+        )
     else:
-        st.balloons()
         st.success(
             f"### Round Complete!\n"
             f"**Score:** {st.session_state.score}/{max_questions()}  \n"
