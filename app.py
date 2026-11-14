@@ -327,7 +327,7 @@ def reset_round() -> None:
     st.session_state.assessment_queue = []
     st.session_state.question_started_at = None
     st.session_state.round_number += 1
-    st.session_state.active_level = st.session_state.selected_level
+    st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
     create_challenge()
 
 
@@ -358,6 +358,8 @@ with st.sidebar:
     if is_assessment():
         st.caption("Level Mode: Mixed (automatic) · 15 questions")
     else:
+        if "selected_level" not in st.session_state:
+            st.session_state.selected_level = "1 Syl"
         st.radio(
             "Choose a Level",
             options=list(LEVEL_MAP.keys()),
@@ -391,7 +393,7 @@ if not st.session_state.participant_id.strip():
     st.info("Enter a Participant ID in the sidebar before answering questions.")
 
 if st.session_state.challenge is None and st.session_state.attempts < max_questions():
-    st.session_state.active_level = st.session_state.selected_level
+    st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
     create_challenge()
 
 if st.session_state.attempts >= max_questions():
