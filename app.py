@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hmac
 import uuid
 from zoneinfo import ZoneInfo
 import requests
@@ -109,6 +110,13 @@ except (FileNotFoundError, ValueError, pd.errors.ParserError) as exc:
 SESSION_DEFAULTS: dict[str, Any] = {
     "participant_id": "",
     "session_id": "",
+    "researcher_unlocked": False,
+    "practice_context": "Home",
+    "active_context": "Home",
+    "history_key": None,
+    "practice_total": 0,
+    "practice_week": 1,
+    "active_practice_week": 1,
     "pending_response": None,
     "save_error": "",
     "test_type": "Practice",
@@ -237,7 +245,7 @@ def redcap_call(stage, **payload):
     try:
         response = requests.post(
             url, data={"token": token, "format": "json", "returnFormat": "json", **payload},
-            timeout=(5, 20), allow_redirects=False,
+            timeout=(5, 20), allow_redirects=False, verify=True,
         )
     except requests.RequestException as exc:
         raise RedcapDiagnosticError(f"{stage}: network error ({type(exc).__name__}).") from None
@@ -269,17 +277,78 @@ def redcap_call(stage, **payload):
     return result
 
 
-def write_result(record):
-    # Reconcile a retry before allocating a new repeating instance.
-    existing = redcap_call("Export existing responses", content="record", type="flat", **{
-        "records[0]": record["record_id"], "fields[0]": "record_id",
-        "fields[1]": "response_id",
+def current_event():
+    if st.session_state.test_type == "Pre-test":
+        return "pretest_arm_1"
+    if st.session_state.test_type == "Post-test":
+        return "posttest_arm_1"
+    return f"practice_session_{st.session_state.active_practice_week}_arm_1"
+
+
+def export_history(participant):
+    fields = ["record_id", "response_id", "round_number", "session_id", "session_type",
+              "question_number", "response_timestamp"]
+    rows = redcap_call("Export existing responses", content="record", type="flat", **{
+        "records[0]": participant, **{f"fields[{i}]": f for i, f in enumerate(fields)}
     })
-    if not isinstance(existing, list):
-        raise RedcapDiagnosticError("Export: unexpected JSON structure; expected a list.")
-    instances = [r for r in existing if r.get("redcap_repeat_instrument") == "igbo_tone_response"]
+    if not isinstance(rows, list):
+        raise RedcapDiagnosticError("Export: unexpected JSON structure.")
+    return [r for r in rows if r.get("record_id") == participant and
+            r.get("redcap_repeat_instrument") == "igbo_tone_response"]
+
+
+def assessment_rows(rows, mode):
+    code = "1" if mode == "Pre-test" else "3"
+    return [r for r in rows if str(r.get("session_type")) == code]
+
+
+def completed(rows):
+    groups = {}
+    for r in rows:
+        if r.get("session_id") and str(r.get("question_number", "")).isdigit():
+            groups.setdefault(r["session_id"], set()).add(int(r["question_number"]))
+    return any(set(range(1, 16)) <= questions for questions in groups.values())
+
+
+def check_access(rows, mode, session_id):
+    pre = assessment_rows(rows, "Pre-test")
+    post = assessment_rows(rows, "Post-test")
+    if mode != "Practice":
+        if not st.session_state.researcher_unlocked:
+            raise RedcapDiagnosticError("Researcher authorization required.")
+        prior = assessment_rows(rows, mode)
+        if any(r.get("session_id") != session_id for r in prior):
+            raise RedcapDiagnosticError("Assessment already started or completed. Contact the researcher; do not retake it.")
+        if mode == "Post-test" and not completed(pre):
+            raise RedcapDiagnosticError("A completed pre-test is required.")
+    else:
+        if not completed(pre):
+            raise RedcapDiagnosticError("A completed pre-test is required before recorded practice.")
+        if post:
+            raise RedcapDiagnosticError("Research practice has ended for this participant.")
+    return pre
+
+
+def practice_week(pre):
+    dates = [datetime.fromisoformat(r["response_timestamp"]).date() for r in pre if r.get("response_timestamp")]
+    if not dates:
+        raise RedcapDiagnosticError("Pre-test date is unavailable. Contact the researcher.")
+    elapsed = (datetime.now(ZoneInfo("America/Regina")).date() - min(dates)).days
+    return max(1, min(4, elapsed // 7 + 1))
+
+
+def write_result(record):
+    existing = export_history(record["record_id"])
+    instances = [r for r in existing if r.get("redcap_event_name") == record["redcap_event_name"]]
     if any(r.get("response_id") == record["response_id"] for r in instances):
         return
+    check_access(existing, st.session_state.test_type, record["session_id"])
+    # Allocate a round number only when its first answer is saved.
+    same_round = [r for r in instances if r.get("session_id") == record["session_id"]]
+    if same_round:
+        record["round_number"] = int(same_round[0]["round_number"])
+    else:
+        record["round_number"] = 1 + max((int(r["round_number"]) for r in instances if str(r.get("round_number", "")).isdigit()), default=0)
     # Use REDCap's automatic instance allocation (requires supported server version).
     payload = dict(record, redcap_repeat_instrument="igbo_tone_response", redcap_repeat_instance="new")
     result = redcap_call("Import new response", content="record", type="flat", overwriteBehavior="normal",
@@ -309,6 +378,8 @@ def submit_answer(selected_tone: str) -> None:
         syllable = str(challenge["SYLLABLE_TYPE"]).strip()
         st.session_state.pending_response = {
             "record_id": st.session_state.participant_id.strip(),
+            "redcap_event_name": current_event(),
+            "igbo_tone_response_complete": 2,
             "session_type": {"Pre-test": 1, "Practice": 2, "Post-test": 3}[st.session_state.test_type],
             "round_number": st.session_state.round_number,
             "question_number": question_number,
@@ -324,6 +395,7 @@ def submit_answer(selected_tone: str) -> None:
             "syllable_type": {"1 Syl": 1, "2 Syl": 2, "3 Syl": 3}[syllable],
             "session_id": st.session_state.session_id,
             "response_id": uuid.uuid4().hex,
+            **({"practice_context": 1 if st.session_state.active_context == "School" else 2} if not is_assessment() else {}),
         }
     record = st.session_state.pending_response
     try:
@@ -342,6 +414,8 @@ def submit_answer(selected_tone: str) -> None:
     st.session_state.selected_tone = selected_tone
     st.session_state.answered = True
     st.session_state.attempts += 1
+    if not is_assessment():
+        st.session_state.practice_total += 1
 
     if is_correct:
         st.session_state.score += 1
@@ -389,7 +463,9 @@ def reset_round() -> None:
     st.session_state.assessment_queue = []
     st.session_state.post_test_review = []
     st.session_state.question_started_at = None
-    st.session_state.round_number += 1
+    st.session_state.round_number = 1
+    st.session_state.history_key = None
+    st.session_state.active_context = st.session_state.get("practice_context", "Home")
     st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
     create_challenge()
 
@@ -403,7 +479,21 @@ def handle_session_change() -> None:
 
 
 with st.sidebar:
-    #st.subheader("")
+    with st.expander("Researcher access"):
+        if not st.session_state.researcher_unlocked:
+            password = st.text_input("Researcher password", type="password", key="research_password")
+            if st.button("Unlock assessments"):
+                expected = str(st.secrets.get("RESEARCHER_PASSWORD", ""))
+                if expected and hmac.compare_digest(password, expected):
+                    st.session_state.researcher_unlocked = True
+                    st.rerun()
+                else:
+                    st.error("Access denied.")
+        elif st.button("Lock assessments", disabled=st.session_state.pending_response is not None or is_assessment()):
+            st.session_state.researcher_unlocked = False
+            st.rerun()
+    if not st.session_state.researcher_unlocked:
+        st.session_state.test_type = "Practice"
 
     st.text_input(
         "Participant ID",
@@ -415,7 +505,7 @@ with st.sidebar:
 
     st.selectbox(
         "Session Type",
-        options=["Practice", "Pre-test", "Post-test"],
+        options=["Practice", "Pre-test", "Post-test"] if st.session_state.researcher_unlocked else ["Practice"],
         key="test_type",
         on_change=handle_session_change,
         disabled=st.session_state.pending_response is not None,
@@ -424,6 +514,10 @@ with st.sidebar:
     if is_assessment():
         st.caption("")
     else:
+        if "practice_context" not in st.session_state:
+            st.session_state.practice_context = st.session_state.active_context
+        st.radio("Practice location", ["Home", "School"], key="practice_context",
+                 on_change=reset_round, disabled=st.session_state.pending_response is not None)
         if "selected_level" not in st.session_state:
             st.session_state.selected_level = "1 Syl"
         st.radio(
@@ -459,6 +553,7 @@ st.header("🎧 Igbo Tone Perception Trainer")
 
 if not st.session_state.participant_id.strip():
     st.info("Enter a Participant ID in the sidebar before answering questions.")
+    st.stop()
 
 if st.session_state.challenge is None and st.session_state.attempts < max_questions():
     st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
@@ -468,6 +563,24 @@ if st.session_state.pending_response is not None:
     st.error(st.session_state.save_error)
     st.button("Retry saving answer", on_click=submit_answer, args=(st.session_state.pending_response["selected_tone"],))
     st.stop()
+
+if not st.session_state.session_id:
+    st.session_state.session_id = uuid.uuid4().hex
+key = (st.session_state.participant_id.strip(), st.session_state.test_type, st.session_state.session_id)
+if st.session_state.history_key != key:
+    try:
+        history = export_history(key[0])
+        pre = check_access(history, key[1], key[2])
+        if not is_assessment():
+            st.session_state.active_practice_week = practice_week(pre)
+            st.session_state.active_context = st.session_state.get("practice_context", "Home")
+        st.session_state.practice_total = sum(str(r.get("session_type")) == "2" for r in history)
+        st.session_state.history_key = key
+    except RedcapDiagnosticError as exc:
+        st.error(str(exc) if key[0].startswith("TEST") or st.session_state.researcher_unlocked else "Unable to start recorded practice. Please contact the researcher.")
+        st.stop()
+if not is_assessment():
+    st.sidebar.caption(f"Practice week {st.session_state.active_practice_week} · Total saved practice answers: {st.session_state.practice_total}")
 
 if st.session_state.attempts >= max_questions():
     st.balloons()
@@ -489,12 +602,10 @@ if st.session_state.attempts >= max_questions():
             f"**Score:** {st.session_state.score}/{max_questions()}  \n"
             f"**Accuracy:** {calculate_accuracy():.1f}%"
         )
-    st.button(
-        "🔄 Start New Round",
-        type="primary",
-        on_click=reset_round,
-        use_container_width=True,
-    )
+    if not is_assessment():
+        st.button("🔄 Start New Round", type="primary", on_click=reset_round, use_container_width=True)
+    else:
+        st.info("Assessment finished. Ask the researcher to select the next activity.")
     st.stop()
 
 question_number = st.session_state.attempts + 1
