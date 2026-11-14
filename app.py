@@ -356,7 +356,7 @@ with st.sidebar:
     )
 
     if is_assessment():
-        st.caption("Level Mode: Mixed (automatic) · 15 questions")
+        st.caption("")
     else:
         if "selected_level" not in st.session_state:
             st.session_state.selected_level = "1 Syl"
