@@ -30,7 +30,16 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_FILE = BASE_DIR / "data" / "igbo_words.csv"
 RESULTS_FILE = BASE_DIR / "results.csv"
 TONE_IMAGE_DIR = BASE_DIR / "tone_images"
-MAX_QUESTIONS = 10
+PRACTICE_QUESTIONS = 10
+ASSESSMENT_DISTRIBUTION = {"1 Syl": 3, "2 Syl": 6, "3 Syl": 6}
+
+
+def is_assessment() -> bool:
+    return st.session_state.test_type in ("Pre-test", "Post-test")
+
+
+def max_questions() -> int:
+    return sum(ASSESSMENT_DISTRIBUTION.values()) if is_assessment() else PRACTICE_QUESTIONS
 
 LEVEL_MAP = {
     "1 Syl": "1 Syl",
@@ -42,7 +51,7 @@ TONE_IMAGES = {
     tone: TONE_IMAGE_DIR / f"{tone}.png"
     for tone in [
         "H", "L", "HL", "HM", "LH", "HH", "LL", "HLH", "LLL",
-        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM",
+        "HHH", "HHL", "LLH", "LHL", "HLL", "LHH", "LHM", "HHM", "HMM"
     ]
 }
 
@@ -108,6 +117,7 @@ SESSION_DEFAULTS: dict[str, Any] = {
     "selected_tone": None,
     "feedback": "",
     "used_word_ids": [],
+    "assessment_queue": [],
     "question_started_at": None,
     "round_number": 1,
 }
@@ -139,8 +149,8 @@ def get_level_dataframe(level_label: str) -> pd.DataFrame:
     ].copy()
 
 
-def build_choices(filtered_df: pd.DataFrame, correct_pattern: str) -> list[str]:
-    if LEVEL_MAP[st.session_state.active_level] == "1 Syl":
+def build_choices(filtered_df: pd.DataFrame, correct_pattern: str, level: str) -> list[str]:
+    if level == "1 Syl":
         choices = ["H", "L"]
         random.shuffle(choices)
         return choices
@@ -156,29 +166,52 @@ def build_choices(filtered_df: pd.DataFrame, correct_pattern: str) -> list[str]:
     return choices
 
 
+def prepare_assessment_queue() -> None:
+    """Sample distinct word IDs per syllable group, then shuffle question order."""
+    queue = []
+    for level, count in ASSESSMENT_DISTRIBUTION.items():
+        pool = get_level_dataframe(level)
+        if pool["ID"].nunique() < count:
+            raise ValueError(f"At least {count} distinct words are needed for {level}.")
+        selected = pool.drop_duplicates(subset="ID").sample(n=count)
+        queue.extend(selected["ID"].astype(str).tolist())
+    random.shuffle(queue)
+    st.session_state.assessment_queue = queue
+
+
 def create_challenge() -> None:
-    filtered_df = get_level_dataframe(st.session_state.active_level)
+    if is_assessment():
+        if not st.session_state.assessment_queue:
+            try:
+                prepare_assessment_queue()
+            except ValueError as exc:
+                st.session_state.challenge = None
+                st.session_state.choices = []
+                st.session_state.feedback = str(exc)
+                return
+        next_id = st.session_state.assessment_queue.pop(0)
+        selected_row = df[df["ID"].astype(str) == next_id].iloc[0]
+        level = str(selected_row["SYLLABLE_TYPE"]).strip()
+        filtered_df = get_level_dataframe(level)
+        challenge = selected_row
+    else:
+        level = st.session_state.active_level
+        filtered_df = get_level_dataframe(level)
+        if filtered_df.empty:
+            st.session_state.challenge = None
+            st.session_state.choices = []
+            st.session_state.feedback = f"No words were found for {level}."
+            return
+        used_ids = {str(value) for value in st.session_state.used_word_ids}
+        remaining_df = filtered_df[~filtered_df["ID"].astype(str).isin(used_ids)]
+        if remaining_df.empty:
+            st.session_state.used_word_ids = []
+            remaining_df = filtered_df
+        challenge = remaining_df.sample(1).iloc[0]
 
-    if filtered_df.empty:
-        st.session_state.challenge = None
-        st.session_state.choices = []
-        st.session_state.feedback = (
-            f"No words were found for {LEVEL_MAP[st.session_state.active_level]}."
-        )
-        return
-
-    used_ids = {str(value) for value in st.session_state.used_word_ids}
-    remaining_df = filtered_df[~filtered_df["ID"].astype(str).isin(used_ids)]
-
-    if remaining_df.empty:
-        st.session_state.used_word_ids = []
-        remaining_df = filtered_df
-
-    challenge = remaining_df.sample(1).iloc[0]
     correct_pattern = str(challenge["TONE_PATTERN"]).strip()
-
     st.session_state.challenge = challenge.to_dict()
-    st.session_state.choices = build_choices(filtered_df, correct_pattern)
+    st.session_state.choices = build_choices(filtered_df, correct_pattern, level)
     st.session_state.answered = False
     st.session_state.selected_tone = None
     st.session_state.feedback = ""
@@ -209,7 +242,7 @@ def write_result(
         st.session_state.test_type,
         st.session_state.round_number,
         question_number,
-        LEVEL_MAP[st.session_state.active_level],
+        str(challenge.get("SYLLABLE_TYPE", "")),
         challenge.get("ID", ""),
         challenge.get("IGBO_WORD", ""),
         str(challenge.get("GLOSS", "")).strip(),
@@ -253,10 +286,14 @@ def submit_answer(selected_tone: str) -> None:
 
     if is_correct:
         st.session_state.score += 1
+
+    if is_assessment():
+        st.session_state.feedback = "Answer recorded."
+    elif is_correct:
         st.session_state.feedback = "✅ Correct!"
     else:
         st.session_state.feedback = (
-            f"❌ Incorrect. The correct tone pattern is {correct_tone}."
+            f"❌ Try again! The correct tone pattern is {correct_tone}."
         )
 
     word_id = str(challenge.get("ID", ""))
@@ -274,7 +311,7 @@ def submit_answer(selected_tone: str) -> None:
 
 
 def start_next_challenge() -> None:
-    if st.session_state.attempts < MAX_QUESTIONS:
+    if st.session_state.attempts < max_questions():
         create_challenge()
 
 
@@ -287,6 +324,7 @@ def reset_round() -> None:
     st.session_state.selected_tone = None
     st.session_state.feedback = ""
     st.session_state.used_word_ids = []
+    st.session_state.assessment_queue = []
     st.session_state.question_started_at = None
     st.session_state.round_number += 1
     st.session_state.active_level = st.session_state.selected_level
@@ -294,17 +332,11 @@ def reset_round() -> None:
 
 
 def handle_level_change() -> None:
-    st.session_state.active_level = st.session_state.selected_level
-    st.session_state.score = 0
-    st.session_state.attempts = 0
-    st.session_state.challenge = None
-    st.session_state.choices = []
-    st.session_state.answered = False
-    st.session_state.selected_tone = None
-    st.session_state.feedback = ""
-    st.session_state.used_word_ids = []
-    st.session_state.question_started_at = None
-    create_challenge()
+    reset_round()
+
+
+def handle_session_change() -> None:
+    reset_round()
 
 
 with st.sidebar:
@@ -320,27 +352,31 @@ with st.sidebar:
         "Session Type",
         options=["Practice", "Pre-test", "Post-test"],
         key="test_type",
+        on_change=handle_session_change,
     )
 
-    st.radio(
-        "Choose a Level",
-        options=list(LEVEL_MAP.keys()),
-        horizontal=True,
-        key="selected_level",
-        on_change=handle_level_change,
-    )
+    if is_assessment():
+        st.caption("Level Mode: Mixed (automatic) · 15 questions")
+    else:
+        st.radio(
+            "Choose a Level",
+            options=list(LEVEL_MAP.keys()),
+            horizontal=True,
+            key="selected_level",
+            on_change=handle_level_change,
+        )
 
     st.subheader("Progress")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Score", st.session_state.score)
+    col1.metric("Score", "—" if is_assessment() else st.session_state.score)
     col2.metric("Attempts", st.session_state.attempts)
-    col3.metric("Accuracy", f"{calculate_accuracy():.0f}%")
+    col3.metric("Accuracy", "—" if is_assessment() else f"{calculate_accuracy():.0f}%")
 
     if st.session_state.feedback:
         st.subheader("")
         st.write(st.session_state.feedback)
 
-        if st.session_state.answered and st.session_state.challenge:
+        if not is_assessment() and st.session_state.answered and st.session_state.challenge:
             challenge = st.session_state.challenge
             st.write(f"**Word:** {challenge.get('IGBO_WORD', '')}")
             gloss = str(challenge.get("GLOSS", "")).strip()
@@ -354,17 +390,20 @@ st.header("🎧 Igbo Tone Perception Trainer")
 if not st.session_state.participant_id.strip():
     st.info("Enter a Participant ID in the sidebar before answering questions.")
 
-if st.session_state.challenge is None and st.session_state.attempts < MAX_QUESTIONS:
+if st.session_state.challenge is None and st.session_state.attempts < max_questions():
     st.session_state.active_level = st.session_state.selected_level
     create_challenge()
 
-if st.session_state.attempts >= MAX_QUESTIONS:
-    st.balloons()
-    st.success(
-        f"### Round Complete!\n"
-        f"**Score:** {st.session_state.score}/{MAX_QUESTIONS}  \n"
-        f"**Accuracy:** {calculate_accuracy():.1f}%"
-    )
+if st.session_state.attempts >= max_questions():
+    if is_assessment():
+        st.success("### Assessment Complete!\nAll 15 answers have been recorded.")
+    else:
+        st.balloons()
+        st.success(
+            f"### Round Complete!\n"
+            f"**Score:** {st.session_state.score}/{max_questions()}  \n"
+            f"**Accuracy:** {calculate_accuracy():.1f}%"
+        )
     st.button(
         "🔄 Start New Round",
         type="primary",
@@ -374,8 +413,8 @@ if st.session_state.attempts >= MAX_QUESTIONS:
     st.stop()
 
 question_number = st.session_state.attempts + 1
-st.write(f"**Question {question_number} of {MAX_QUESTIONS}**")
-st.progress(st.session_state.attempts / MAX_QUESTIONS)
+st.write(f"**Question {question_number} of {max_questions()}**")
+st.progress(st.session_state.attempts / max_questions())
 
 challenge = st.session_state.challenge
 if challenge is None:
@@ -420,7 +459,7 @@ for index, tone in enumerate(choices):
 
 if st.session_state.answered:
     st.markdown("---")
-    if st.session_state.attempts < MAX_QUESTIONS:
+    if st.session_state.attempts < max_questions():
         st.button(
             "▶ Next Challenge",
             type="primary",
