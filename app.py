@@ -277,6 +277,41 @@ def redcap_call(stage, **payload):
     return result
 
 
+CONTROL_ID = "RESEARCHCONTROL"
+CONTROL_EVENT = "pretest_arm_1"
+CONTROL_FIELDS = {"Pre-test": "pretest_open", "Post-test": "posttest_open"}
+
+
+def authorized_participant(participant):
+    codes = st.secrets.get("PARTICIPANT_CODES", [])
+    return isinstance(codes, list) and participant != CONTROL_ID and participant in codes
+
+
+def read_controls():
+    fields = ["record_id", *CONTROL_FIELDS.values()]
+    rows = redcap_call("Read assessment controls", content="record", type="flat", **{
+        "records[0]": CONTROL_ID, **{f"fields[{i}]": f for i, f in enumerate(fields)}
+    })
+    if not isinstance(rows, list):
+        raise RedcapDiagnosticError("Invalid control response.")
+    row = next((r for r in rows if r.get("record_id") == CONTROL_ID and
+                r.get("redcap_event_name") == CONTROL_EVENT and not r.get("redcap_repeat_instrument")), {})
+    return {mode: str(row.get(field, "")) == "1" for mode, field in CONTROL_FIELDS.items()}
+
+
+def set_control(mode, opened):
+    if not st.session_state.researcher_unlocked:
+        raise RedcapDiagnosticError("Researcher authorization required.")
+    payload = {"record_id": CONTROL_ID, "redcap_event_name": CONTROL_EVENT,
+               CONTROL_FIELDS[mode]: int(opened)}
+    result = redcap_call("Update assessment controls", content="record", type="flat",
+                         overwriteBehavior="normal", data=json.dumps([payload]), returnContent="count")
+    if not isinstance(result, dict) or int(result.get("count", 0)) != 1:
+        raise RedcapDiagnosticError("Control update not confirmed.")
+    if read_controls()[mode] != opened:
+        raise RedcapDiagnosticError("Control verification failed.")
+
+
 def current_event():
     if st.session_state.test_type == "Pre-test":
         return "pretest_arm_1"
@@ -314,8 +349,8 @@ def check_access(rows, mode, session_id):
     pre = assessment_rows(rows, "Pre-test")
     post = assessment_rows(rows, "Post-test")
     if mode != "Practice":
-        if not st.session_state.researcher_unlocked:
-            raise RedcapDiagnosticError("Researcher authorization required.")
+        if not read_controls().get(mode, False):
+            raise RedcapDiagnosticError("Assessment is currently locked.")
         prior = assessment_rows(rows, mode)
         if any(r.get("session_id") != session_id for r in prior):
             raise RedcapDiagnosticError("Assessment already started or completed. Contact the researcher; do not retake it.")
@@ -338,6 +373,8 @@ def practice_week(pre):
 
 
 def write_result(record):
+    if not authorized_participant(record["record_id"]):
+        raise RedcapDiagnosticError("Participant code is not authorized.")
     existing = export_history(record["record_id"])
     instances = [r for r in existing if r.get("redcap_event_name") == record["redcap_event_name"]]
     if any(r.get("response_id") == record["response_id"] for r in instances):
@@ -478,22 +515,40 @@ def handle_session_change() -> None:
     reset_round()
 
 
+try:
+    controls = read_controls()
+except RedcapDiagnosticError:
+    controls = {mode: False for mode in CONTROL_FIELDS}
+    st.warning("Assessment availability could not be checked. Assessments are locked.")
+
 with st.sidebar:
     with st.expander("Researcher access"):
         if not st.session_state.researcher_unlocked:
             password = st.text_input("Researcher password", type="password", key="research_password")
-            if st.button("Unlock assessments"):
+            if st.button("Researcher login"):
                 expected = str(st.secrets.get("RESEARCHER_PASSWORD", ""))
-                if expected and hmac.compare_digest(password, expected):
+                if expected and hmac.compare_digest(password.encode(), expected.encode()):
                     st.session_state.researcher_unlocked = True
                     st.rerun()
                 else:
                     st.error("Access denied.")
-        elif st.button("Lock assessments", disabled=st.session_state.pending_response is not None or is_assessment()):
-            st.session_state.researcher_unlocked = False
-            st.rerun()
-    if not st.session_state.researcher_unlocked:
-        st.session_state.test_type = "Practice"
+        else:
+            for mode, opened in controls.items():
+                st.caption(f"{mode}: {'Open' if opened else 'Locked'}")
+                if st.button(f"{'Lock' if opened else 'Unlock'} {mode}"):
+                    try:
+                        set_control(mode, not opened)
+                        st.rerun()
+                    except RedcapDiagnosticError as exc:
+                        st.error(str(exc))
+            if st.button("Researcher logout"):
+                st.session_state.researcher_unlocked = False
+                st.rerun()
+    st.button("Refresh assessment availability")
+    options = ["Practice"] + [mode for mode, opened in controls.items() if opened]
+    # Preserve an existing assessment on closure; never silently reset a pending answer.
+    if st.session_state.test_type not in options:
+        options.append(st.session_state.test_type)
 
     st.text_input(
         "Participant ID",
@@ -505,7 +560,7 @@ with st.sidebar:
 
     st.selectbox(
         "Session Type",
-        options=["Practice", "Pre-test", "Post-test"] if st.session_state.researcher_unlocked else ["Practice"],
+        options=options,
         key="test_type",
         on_change=handle_session_change,
         disabled=st.session_state.pending_response is not None,
@@ -555,6 +610,10 @@ if not st.session_state.participant_id.strip():
     st.info("Enter a Participant ID in the sidebar before answering questions.")
     st.stop()
 
+if not authorized_participant(st.session_state.participant_id.strip()):
+    st.error("Please enter your assigned participant code.")
+    st.stop()
+
 if st.session_state.challenge is None and st.session_state.attempts < max_questions():
     st.session_state.active_level = st.session_state.get("selected_level", "1 Syl")
     create_challenge()
@@ -562,6 +621,10 @@ if st.session_state.challenge is None and st.session_state.attempts < max_questi
 if st.session_state.pending_response is not None:
     st.error(st.session_state.save_error)
     st.button("Retry saving answer", on_click=submit_answer, args=(st.session_state.pending_response["selected_tone"],))
+    st.stop()
+
+if is_assessment() and not controls.get(st.session_state.test_type, False) and st.session_state.attempts < max_questions():
+    st.warning("This assessment is currently locked. Ask the researcher and refresh availability.")
     st.stop()
 
 if not st.session_state.session_id:
