@@ -536,7 +536,7 @@ def handle_session_change() -> None:
 admin_view = st.query_params.get("view", "") == "researcher"
 if admin_view:
     st.title("Researcher Control Panel")
-    st.caption("This administration view is password protected. Do not share its link with participants.")
+    #st.caption("This administration view is password protected. Do not share its link with participants.")
     if not st.session_state.researcher_unlocked:
         password = st.text_input("Researcher password", type="password", key="research_password")
         if st.button("Sign in", type="primary"):
@@ -704,7 +704,7 @@ if st.session_state.attempts >= max_questions():
     if not is_assessment():
         st.button("🔄 Start New Round", type="primary", on_click=reset_round, use_container_width=True)
     else:
-        st.info("Assessment finished. Ask the researcher to select the next activity.")
+        st.info("Assessment finished.")
     st.stop()
 
 question_number = st.session_state.attempts + 1
