@@ -283,8 +283,24 @@ CONTROL_FIELDS = {"Pre-test": "pretest_open", "Post-test": "posttest_open"}
 
 
 def authorized_participant(participant):
-    codes = st.secrets.get("PARTICIPANT_CODES", [])
-    return isinstance(codes, list) and participant != CONTROL_ID and participant in codes
+    """Only records registered in REDCap may submit responses.
+
+    A matching record ID is not proof of identity; assign unpredictable codes.
+    """
+    participant = str(participant).strip()
+    if not participant or participant == CONTROL_ID:
+        return False
+    rows = redcap_call(
+        "Validate participant", content="record", type="flat",
+        **{"records[0]": participant, "fields[0]": "record_id"},
+    )
+    if not isinstance(rows, list):
+        raise RedcapDiagnosticError("Participant validation returned an unexpected result.")
+    return any(
+        str(row.get("record_id", "")).strip() == participant
+        and not row.get("redcap_repeat_instrument")
+        for row in rows
+    )
 
 
 def read_controls():
@@ -515,6 +531,44 @@ def handle_session_change() -> None:
     reset_round()
 
 
+# A separate researcher URL keeps administration controls off the child-facing page.
+# The URL itself is not an authentication mechanism; the password is mandatory.
+admin_view = st.query_params.get("view", "") == "researcher"
+if admin_view:
+    st.title("Researcher Control Panel")
+    st.caption("This administration view is password protected. Do not share its link with participants.")
+    if not st.session_state.researcher_unlocked:
+        password = st.text_input("Researcher password", type="password", key="research_password")
+        if st.button("Sign in", type="primary"):
+            expected = str(st.secrets.get("RESEARCHER_PASSWORD", ""))
+            if expected and hmac.compare_digest(password.encode(), expected.encode()):
+                st.session_state.researcher_unlocked = True
+                st.rerun()
+            else:
+                st.error("Access denied.")
+        st.stop()
+    try:
+        admin_controls = read_controls()
+    except RedcapDiagnosticError as exc:
+        st.error(f"Cannot read REDCap access settings: {exc}")
+        st.stop()
+    for mode, opened in admin_controls.items():
+        col1, col2 = st.columns([3, 1])
+        col1.write(f"**{mode}:** {'Open' if opened else 'Locked'}")
+        if col2.button(f"{'Lock' if opened else 'Unlock'} {mode}", key=f"admin_{mode}"):
+            try:
+                set_control(mode, not opened)
+                st.rerun()
+            except RedcapDiagnosticError as exc:
+                st.error(str(exc))
+    if st.button("Sign out"):
+        st.session_state.researcher_unlocked = False
+        st.rerun()
+    st.info("Access is checked when participants load or interact with the application. "
+            "Locking stops new response submissions; it does not erase saved answers.")
+    st.stop()
+
+# Participants see no administrative controls or manual refresh button.
 try:
     controls = read_controls()
 except RedcapDiagnosticError:
@@ -522,29 +576,6 @@ except RedcapDiagnosticError:
     st.warning("Assessment availability could not be checked. Assessments are locked.")
 
 with st.sidebar:
-    with st.expander("Researcher access"):
-        if not st.session_state.researcher_unlocked:
-            password = st.text_input("Researcher password", type="password", key="research_password")
-            if st.button("Researcher login"):
-                expected = str(st.secrets.get("RESEARCHER_PASSWORD", ""))
-                if expected and hmac.compare_digest(password.encode(), expected.encode()):
-                    st.session_state.researcher_unlocked = True
-                    st.rerun()
-                else:
-                    st.error("Access denied.")
-        else:
-            for mode, opened in controls.items():
-                st.caption(f"{mode}: {'Open' if opened else 'Locked'}")
-                if st.button(f"{'Lock' if opened else 'Unlock'} {mode}"):
-                    try:
-                        set_control(mode, not opened)
-                        st.rerun()
-                    except RedcapDiagnosticError as exc:
-                        st.error(str(exc))
-            if st.button("Researcher logout"):
-                st.session_state.researcher_unlocked = False
-                st.rerun()
-    st.button("Refresh assessment availability")
     options = ["Practice"] + [mode for mode, opened in controls.items() if opened]
     # Preserve an existing assessment on closure; never silently reset a pending answer.
     if st.session_state.test_type not in options:
@@ -610,8 +641,13 @@ if not st.session_state.participant_id.strip():
     st.info("Enter a Participant ID in the sidebar before answering questions.")
     st.stop()
 
-if not authorized_participant(st.session_state.participant_id.strip()):
-    st.error("Please enter your assigned participant code.")
+try:
+    registered = authorized_participant(st.session_state.participant_id.strip())
+except RedcapDiagnosticError:
+    st.error("Participant verification is temporarily unavailable. Please ask the researcher.")
+    st.stop()
+if not registered:
+    st.error("This participant code is not registered. Please ask the researcher.")
     st.stop()
 
 if st.session_state.challenge is None and st.session_state.attempts < max_questions():
@@ -624,7 +660,7 @@ if st.session_state.pending_response is not None:
     st.stop()
 
 if is_assessment() and not controls.get(st.session_state.test_type, False) and st.session_state.attempts < max_questions():
-    st.warning("This assessment is currently locked. Ask the researcher and refresh availability.")
+    st.warning("This assessment is currently locked. Please ask the researcher.")
     st.stop()
 
 if not st.session_state.session_id:
