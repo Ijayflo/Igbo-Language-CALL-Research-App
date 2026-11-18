@@ -35,6 +35,35 @@ DATA_FILE = BASE_DIR / "data" / "igbo_words.csv"
 TONE_IMAGE_DIR = BASE_DIR / "tone_images"
 PRACTICE_QUESTIONS = 10
 ASSESSMENT_DISTRIBUTION = {"1 Syl": 3, "2 Syl": 6, "3 Syl": 6}
+# Speaker 3 is optional until its recordings have been completed and uploaded.
+# Keep these column names in data/igbo_words.csv.
+SPEAKER_AUDIO_COLUMNS = {
+    "S1": "AUDIO_FILE",
+    "S2": "AUDIO_FILE_2",
+    "S3": "AUDIO_FILE_3",
+}
+
+
+def resolve_asset_path(raw_path: str) -> Path:
+    # GitHub/Streamlit Cloud uses forward slashes, including for files whose
+    # paths were entered in a CSV on Windows.
+    path = Path(str(raw_path).strip().replace("\\", "/"))
+    return path if path.is_absolute() else BASE_DIR / path
+
+
+def available_recordings(word: Any) -> dict[str, str]:
+    """Return speaker IDs and usable CSV paths for this particular word.
+
+    Missing files and blank speaker columns are ignored. The original speaker
+    remains usable for older single-speaker datasets.
+    """
+    recordings = {}
+    for speaker_id, column in SPEAKER_AUDIO_COLUMNS.items():
+        raw_path = str(word.get(column, "") or "").strip()
+        if raw_path and raw_path.casefold() not in {"nan", "none"}:
+            if resolve_asset_path(raw_path).is_file():
+                recordings[speaker_id] = raw_path
+    return recordings
 
 
 def is_assessment() -> bool:
@@ -79,7 +108,14 @@ def load_word_data(path: Path) -> pd.DataFrame:
 
     data = data.copy()
     for column in REQUIRED_COLUMNS:
-        data[column] = data[column].astype(str).str.strip()
+        data[column] = data[column].fillna("").astype(str).str.strip()
+
+    # Older datasets may not yet have Speaker 2 or Speaker 3 columns.
+    for column in SPEAKER_AUDIO_COLUMNS.values():
+        if column not in data.columns:
+            data[column] = ""
+        else:
+            data[column] = data[column].fillna("").astype(str).str.strip()
 
     if "GLOSS" not in data.columns:
         data["GLOSS"] = ""
@@ -90,12 +126,19 @@ def load_word_data(path: Path) -> pd.DataFrame:
         (data["ID"] != "")
         & (data["IGBO_WORD"] != "")
         & (data["TONE_PATTERN"] != "")
-        & (data["AUDIO_FILE"] != "")
         & (data["SYLLABLE_TYPE"] != "")
     ].reset_index(drop=True)
 
+    # Do not ask learners to identify a tone they cannot hear. A row may have
+    # only Speaker 2's audio when the original file is missing.
+    data = data[data.apply(lambda row: bool(available_recordings(row)), axis=1)]
+    data = data.reset_index(drop=True)
+
     if data.empty:
-        raise ValueError("The dataset contains no usable rows.")
+        raise ValueError(
+            "The dataset contains no words with audio files found on disk. "
+            "Check the AUDIO_FILE columns and the audio folder in the repository."
+        )
 
     return data
 
@@ -134,6 +177,7 @@ SESSION_DEFAULTS: dict[str, Any] = {
     "post_test_review": [],
     "question_started_at": None,
     "round_number": 1,
+    "speaker_usage": {"S1": 0, "S2": 0, "S3": 0},
 }
 
 
@@ -144,11 +188,6 @@ def initialize_session_state() -> None:
 
 
 initialize_session_state()
-
-
-def resolve_asset_path(raw_path: str) -> Path:
-    path = Path(str(raw_path).strip())
-    return path if path.is_absolute() else BASE_DIR / path
 
 
 def calculate_accuracy() -> float:
@@ -193,6 +232,31 @@ def prepare_assessment_queue() -> None:
     st.session_state.assessment_queue = queue
 
 
+def select_recording(word: Any) -> tuple[str, str]:
+    """Pick one usable speaker per question and keep assessments balanced.
+
+    Assessment counts are balanced as far as the available audio allows. A
+    speaker's audio is never changed after a challenge has been created.
+    """
+    recordings = available_recordings(word)
+    if not recordings:
+        raise ValueError("No playable recording is available for this word.")
+
+    if is_assessment():
+        usage = st.session_state.speaker_usage
+        lowest_count = min(usage.get(speaker, 0) for speaker in recordings)
+        candidates = [
+            speaker for speaker in recordings
+            if usage.get(speaker, 0) == lowest_count
+        ]
+        speaker_id = random.choice(candidates)
+        usage[speaker_id] = usage.get(speaker_id, 0) + 1
+    else:
+        speaker_id = random.choice(list(recordings))
+
+    return speaker_id, recordings[speaker_id]
+
+
 def create_challenge() -> None:
     if is_assessment():
         if not st.session_state.assessment_queue:
@@ -224,7 +288,12 @@ def create_challenge() -> None:
         challenge = remaining_df.sample(1).iloc[0]
 
     correct_pattern = str(challenge["TONE_PATTERN"]).strip()
-    st.session_state.challenge = challenge.to_dict()
+    speaker_id, audio_file = select_recording(challenge)
+    selected_challenge = challenge.to_dict()
+    # Retain the speaker choice across all Streamlit reruns for this question.
+    selected_challenge["_speaker_id"] = speaker_id
+    selected_challenge["_audio_file"] = audio_file
+    st.session_state.challenge = selected_challenge
     st.session_state.choices = build_choices(filtered_df, correct_pattern, level)
     st.session_state.answered = False
     st.session_state.selected_tone = None
@@ -439,6 +508,9 @@ def submit_answer(selected_tone: str) -> None:
             "word_id": str(challenge["ID"]),
             "igbo_word": str(challenge["IGBO_WORD"]),
             "gloss": str(challenge.get("GLOSS", "")),
+            # Add a short-text field named speaker_id to the REDCap
+            # Igbo Tone Response instrument before deploying this version.
+            "speaker_id": str(challenge.get("_speaker_id", "S1")),
             "correct_tone": correct_tone,
             "selected_tone": selected_tone,
             "is_correct": int(is_correct),
@@ -514,6 +586,7 @@ def reset_round() -> None:
     st.session_state.feedback = ""
     st.session_state.used_word_ids = []
     st.session_state.assessment_queue = []
+    st.session_state.speaker_usage = {"S1": 0, "S2": 0, "S3": 0}
     st.session_state.post_test_review = []
     st.session_state.question_started_at = None
     st.session_state.round_number = 1
@@ -536,7 +609,7 @@ def handle_session_change() -> None:
 admin_view = st.query_params.get("view", "") == "researcher"
 if admin_view:
     st.title("Researcher Control Panel")
-    #st.caption("This administration view is password protected. Do not share its link with participants.")
+    st.caption("This administration view is password protected. Do not share its link with participants.")
     if not st.session_state.researcher_unlocked:
         password = st.text_input("Researcher password", type="password", key="research_password")
         if st.button("Sign in", type="primary"):
@@ -704,7 +777,7 @@ if st.session_state.attempts >= max_questions():
     if not is_assessment():
         st.button("🔄 Start New Round", type="primary", on_click=reset_round, use_container_width=True)
     else:
-        st.info("Assessment finished.")
+        st.info("Assessment finished. Ask the researcher to select the next activity.")
     st.stop()
 
 question_number = st.session_state.attempts + 1
@@ -716,7 +789,7 @@ if challenge is None:
     st.error(st.session_state.feedback or "A challenge could not be created.")
     st.stop()
 
-audio_path = resolve_asset_path(str(challenge["AUDIO_FILE"]))
+audio_path = resolve_asset_path(str(challenge.get("_audio_file", challenge["AUDIO_FILE"])))
 st.subheader("🔊 Listen Carefully")
 if audio_path.exists():
     st.audio(str(audio_path))
